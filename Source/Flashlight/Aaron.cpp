@@ -2,11 +2,31 @@
 
 
 #include "Aaron.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 AAaron::AAaron()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+
+	Radius = 500.f;
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> characterMesh(TEXT("/Script/Engine.SkeletalMesh'/Game/01_Main/Meshes/SKM_Manny.SKM_Manny'"));
+	if (characterMesh.Succeeded())
+	{
+		GetMesh()->SetSkeletalMesh(characterMesh.Object);
+	}
+
+	CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+	CameraArm->SetupAttachment(GetMesh());
+	CameraArm->TargetArmLength = Radius;
+	CameraArm->bUsePawnControlRotation = true;
+
+	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
+	FollowCamera->SetupAttachment(CameraArm, USpringArmComponent::SocketName);
+	FollowCamera->bUsePawnControlRotation = false;
+
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 }
@@ -14,8 +34,7 @@ AAaron::AAaron()
 // Called when the game starts or when spawned
 void AAaron::BeginPlay()
 {
-	
-	Radius = 500;
+
 	Super::BeginPlay();
 	
 }
@@ -31,10 +50,12 @@ void AAaron::Tick(float DeltaTime)
 void AAaron::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	PlayerInputComponent->BindAxis(TEXT("Move"), this, &AAaron::Move);
+	check(PlayerInputComponent);
+	PlayerInputComponent->BindAxis("Move", this, &AAaron::Move);
 }
 
 void AAaron::Move(float AxisVal)
 {
-	AddMovementInput(GetActorForwardVector() * AxisVal);
+	if(Controller != NULL && AxisVal != 0.0)
+	AddMovementInput(GetActorRightVector() * AxisVal);
 }

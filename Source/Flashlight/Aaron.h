@@ -11,6 +11,12 @@ class FLASHLIGHT_API AAaron : public ACharacter
 {
 	GENERATED_BODY()
 
+	UPROPERTY(VisibleAnywhere, Category = "Camera")
+	class USpringArmComponent* CameraArm;
+
+	UPROPERTY(VisibleAnywhere, Category = "Camera")
+	class UCameraComponent* FollowCamera;
+
 public:
 	// Sets default values for this character's properties
 	AAaron();
@@ -23,11 +29,14 @@ protected:
 	virtual void BeginPlay() override;
 	void Move(float AxisVal);
 
+	
+
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 };
