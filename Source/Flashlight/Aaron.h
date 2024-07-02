@@ -4,7 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include <InputActionValue.h>
+#include "Components/DirectionalLightComponent.h"
 #include "Aaron.generated.h"
+
+
 
 UCLASS()
 class FLASHLIGHT_API AAaron : public ACharacter
@@ -17,6 +21,9 @@ class FLASHLIGHT_API AAaron : public ACharacter
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	class UCameraComponent* FollowCamera;
 
+	UPROPERTY(EditAnywhere, Category = "Light")
+	class UDirectionalLightComponent* Sun;
+
 public:
 	// Sets default values for this character's properties
 	AAaron();
@@ -28,7 +35,9 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	void Move(float AxisVal);
-
+	void Look(const FInputActionValue& Value);
+	void Turn();
+	bool Direction;
 	
 
 

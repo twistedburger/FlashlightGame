@@ -10,5 +10,5 @@ ASideScrollGameMode::ASideScrollGameMode()
     PrimaryActorTick.bStartWithTickEnabled = false;
     PrimaryActorTick.bAllowTickOnDedicatedServer = false;
 
-    DefaultPawnClass = AAaron::StaticClass();
+    DefaultPawnClass = nullptr;
 }
