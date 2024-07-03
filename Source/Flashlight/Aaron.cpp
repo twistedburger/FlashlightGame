@@ -41,11 +41,11 @@ void AAaron::BeginPlay()
 
 	Super::BeginPlay();
 
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
-	{
-		PlayerController->SetShowMouseCursor(true);
-		PlayerController->SetInputMode(FInputModeGameAndUI());
-	}
+	//if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	//{
+	//	PlayerController->SetShowMouseCursor(true);
+	//	PlayerController->SetInputMode(FInputModeGameAndUI());
+	//}
 	
 }
 
@@ -60,8 +60,8 @@ void AAaron::Tick(float DeltaTime)
 void AAaron::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	check(PlayerInputComponent);
-	PlayerInputComponent->BindAxis("Move", this, &AAaron::Move);
+	//check(PlayerInputComponent);
+	//PlayerInputComponent->BindAxis("Move", this, &AAaron::Move);
 
 }
 

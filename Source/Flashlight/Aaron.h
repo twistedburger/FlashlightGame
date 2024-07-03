@@ -21,8 +21,7 @@ class FLASHLIGHT_API AAaron : public ACharacter
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	class UCameraComponent* FollowCamera;
 
-	UPROPERTY(EditAnywhere, Category = "Light")
-	class UDirectionalLightComponent* Sun;
+
 
 public:
 	// Sets default values for this character's properties
@@ -30,6 +29,9 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Path")
 	float Radius;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Light")
+	class UDirectionalLightComponent* Sun;
 
 protected:
 	// Called when the game starts or when spawned
