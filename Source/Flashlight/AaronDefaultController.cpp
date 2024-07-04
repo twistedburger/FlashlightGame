@@ -4,6 +4,7 @@
 #include "AaronDefaultController.h"
 #include "EnhancedInputComponent.h"
 #include "Aaron.h"
+#include "Math/UnrealMathUtility.h"
 #include <EnhancedInputSubsystems.h>
 
 void AAaronDefaultController::OnPossess(APawn* aPawn)
@@ -44,11 +45,15 @@ void AAaronDefaultController::HandleMove(const FInputActionValue& InputActionVal
 	if (PlayerCharacter)
 	{
 		PlayerCharacter->AddMovementInput(PlayerCharacter->GetActorRightVector(), Movement);
+		float WalkRotation = Movement * 180 / (4000 * PI);
+
+		if (LevelObject)
+			LevelObject->SetActorRotation(FRotator(0, WalkRotation, 0));
 	}
 }
 
 void AAaronDefaultController::HandleLook(const FInputActionValue& InputActionValue)
 {
 	const FVector2D LookAxisVector = InputActionValue.Get<FVector2D>();
-	PlayerCharacter->AddActorLocalRotation(FRotator(LookAxisVector.X, 0, LookAxisVector.Y));
+	//PlayerCharacter->AddActorLocalRotation(FRotator(LookAxisVector.X, 0, LookAxisVector.Y));
 }

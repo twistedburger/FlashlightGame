@@ -28,6 +28,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Input|Character Movement")
 	TObjectPtr<UInputMappingContext> InputMappingContent = nullptr;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Landscape")
+	AActor* LevelObject = nullptr;
+
 
 protected:
 	void HandleMove(const FInputActionValue& InputActionValue);
