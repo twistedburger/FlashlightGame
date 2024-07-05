@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include <InputActionValue.h>
-#include "Components/DirectionalLightComponent.h"
 #include "Aaron.generated.h"
 
 
@@ -30,16 +29,16 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Path")
 	float Radius;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Light")
-	class UDirectionalLightComponent* Sun;
+	UPROPERTY(EditAnywhere, Category = "Path")
+	AActor* Level = nullptr;
+
+	AActor* GetLevelActor();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	void Move(float AxisVal);
-	void Look(const FInputActionValue& Value);
-	void Turn();
-	bool Direction;
+	
+
 	
 
 

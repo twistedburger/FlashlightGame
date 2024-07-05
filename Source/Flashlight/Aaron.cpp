@@ -14,7 +14,6 @@ AAaron::AAaron()
 
 	Radius = 900.f;
 
-
 	CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraArm->SetupAttachment(GetMesh());
 	CameraArm->TargetArmLength = Radius;
@@ -24,11 +23,8 @@ AAaron::AAaron()
 	FollowCamera->SetupAttachment(CameraArm, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
 
-	Sun = nullptr;
-
 	bUseControllerRotationYaw = false;
 
-	Direction = true;
 
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -49,6 +45,14 @@ void AAaron::BeginPlay()
 	
 }
 
+AActor* AAaron::GetLevelActor()
+{
+	if (Level)
+		return Level;
+	else 
+		return nullptr;
+}
+
 // Called every frame
 void AAaron::Tick(float DeltaTime)
 {
@@ -65,37 +69,34 @@ void AAaron::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
-void AAaron::Move(float AxisVal)
-{
-	if (Controller != NULL && AxisVal != 0.0)
-	{
-		//Turn();
-	
-	AddMovementInput(GetActorRightVector() * AxisVal);
-	float WalkRotation = AxisVal * 180 / (Radius * M_PI);
-	AddActorLocalRotation(FRotator(0, WalkRotation, 0));
-
-	if(Sun)
-		Sun->AddLocalRotation(FRotator(0, WalkRotation, 0));
-
-	}
-}
-
-void AAaron::Look(const FInputActionValue& Value)
-{
-	FVector2D LookAxisVector = Value.Get<FVector2D>();
-	AddActorLocalRotation(FRotator(LookAxisVector.X, 0, LookAxisVector.Y));
-
-}
-
-
-void AAaron::Turn()
-{
-	if (Direction)
-	{
-	CameraArm->bUsePawnControlRotation = true;
-	Direction = false;
-	GetMesh()->AddLocalRotation(FRotator(0, 180, 0));
-
-	}
-}
+//void AAaron::Move(float AxisVal)
+//{
+//	if (Controller != NULL && AxisVal != 0.0)
+//	{
+//		//Turn();
+//
+//		AddMovementInput(GetActorRightVector() * AxisVal);
+//		float WalkRotation = AxisVal * 180 / (Radius * M_PI);
+//		AddActorLocalRotation(FRotator(0, WalkRotation, 0));
+//	}
+//
+//}
+//
+//void AAaron::Look(const FInputActionValue& Value)
+//{
+//	FVector2D LookAxisVector = Value.Get<FVector2D>();
+//	AddActorLocalRotation(FRotator(LookAxisVector.X, 0, LookAxisVector.Y));
+//
+//}
+//
+//
+//void AAaron::Turn()
+//{
+//	if (Direction)
+//	{
+//	CameraArm->bUsePawnControlRotation = true;
+//	Direction = false;
+//	GetMesh()->AddLocalRotation(FRotator(0, 180, 0));
+//
+//	}
+//}

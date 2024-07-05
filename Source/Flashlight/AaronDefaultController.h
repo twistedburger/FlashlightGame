@@ -28,8 +28,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Input|Character Movement")
 	TObjectPtr<UInputMappingContext> InputMappingContent = nullptr;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="Landscape")
-	AActor* LevelObject = nullptr;
+	UPROPERTY(EditAnywhere, Category= "Player Input|Character Movement")
+	float Speed = 10.0f;
 
 
 protected:

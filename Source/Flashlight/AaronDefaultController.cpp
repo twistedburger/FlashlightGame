@@ -44,16 +44,29 @@ void AAaronDefaultController::HandleMove(const FInputActionValue& InputActionVal
 
 	if (PlayerCharacter)
 	{
-		PlayerCharacter->AddMovementInput(PlayerCharacter->GetActorRightVector(), Movement);
-		float WalkRotation = Movement * 180 / (4000 * PI);
+		
+		if(Movement > 0)
+			PlayerCharacter->SetActorRotation(FRotator(0, 0, 0));
+		if(Movement < 0)
+			PlayerCharacter->SetActorRotation(FRotator(0, 180, 0));
+
+		float WalkRotation = -Movement * Speed * 180 / (4000 * PI);
+
+
+		AActor* LevelObject = PlayerCharacter->GetLevelActor();
 
 		if (LevelObject)
-			LevelObject->SetActorRotation(FRotator(0, WalkRotation, 0));
+		{
+			LevelObject->SetPivotOffset(FVector(0, 4000, 0));
+			LevelObject->AddActorLocalRotation(FRotator(0, WalkRotation, 0));
+		}
+		
 	}
 }
 
 void AAaronDefaultController::HandleLook(const FInputActionValue& InputActionValue)
 {
 	const FVector2D LookAxisVector = InputActionValue.Get<FVector2D>();
+	//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, *(FString::Printf(TEXT("X: %f \nY: %f"), LookAxisVector.X, LookAxisVector.Y)));
 	//PlayerCharacter->AddActorLocalRotation(FRotator(LookAxisVector.X, 0, LookAxisVector.Y));
 }
