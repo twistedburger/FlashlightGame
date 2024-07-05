@@ -36,8 +36,14 @@ protected:
 	void HandleMove(const FInputActionValue& InputActionValue);
 	void HandleLook(const FInputActionValue& InputActionValue);
 
+	FVector2D OffsetMouseLocation();
+	float CalculateLookAngle(FVector2D MousePosition);
+
+
 	virtual void OnPossess(APawn* aPawn) override;
 	virtual void OnUnPossess() override;
+	
+
 
 private:
 	UPROPERTY()

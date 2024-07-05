@@ -5,6 +5,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Components/SpotLightComponent.h"
 #include "math.h"
 
 
@@ -14,14 +15,14 @@ AAaron::AAaron()
 
 	Radius = 900.f;
 
-	CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
-	CameraArm->SetupAttachment(GetMesh());
-	CameraArm->TargetArmLength = Radius;
-	CameraArm->bUsePawnControlRotation = false;
+	//CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+	//CameraArm->SetupAttachment(GetMesh());
+	//CameraArm->TargetArmLength = Radius;
+	//CameraArm->bUsePawnControlRotation = false;
 
-	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	FollowCamera->SetupAttachment(CameraArm, USpringArmComponent::SocketName);
-	FollowCamera->bUsePawnControlRotation = false;
+	//FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
+	//FollowCamera->SetupAttachment(CameraArm, USpringArmComponent::SocketName);
+	//FollowCamera->bUsePawnControlRotation = false;
 
 	bUseControllerRotationYaw = false;
 
@@ -31,11 +32,22 @@ AAaron::AAaron()
 
 }
 
+USpotLightComponent* AAaron::GetFlashlight()
+{
+	if (Flashlight)
+		return Flashlight;
+	else
+		return nullptr;
+}
+
 // Called when the game starts or when spawned
 void AAaron::BeginPlay()
 {
 
 	Super::BeginPlay();
+
+	Flashlight = GetComponentByClass<USpotLightComponent>();
+
 
 	//if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	//{
@@ -44,6 +56,7 @@ void AAaron::BeginPlay()
 	//}
 	
 }
+
 
 AActor* AAaron::GetLevelActor()
 {

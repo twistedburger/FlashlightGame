@@ -7,6 +7,7 @@
 #include <InputActionValue.h>
 #include "Aaron.generated.h"
 
+class USpotLightComponent;
 
 
 UCLASS()
@@ -14,11 +15,11 @@ class FLASHLIGHT_API AAaron : public ACharacter
 {
 	GENERATED_BODY()
 
-	UPROPERTY(VisibleAnywhere, Category = "Camera")
-	class USpringArmComponent* CameraArm;
+	//UPROPERTY(VisibleAnywhere, Category = "Camera")
+	//class USpringArmComponent* CameraArm;
 
-	UPROPERTY(VisibleAnywhere, Category = "Camera")
-	class UCameraComponent* FollowCamera;
+	//UPROPERTY(VisibleAnywhere, Category = "Camera")
+	//class UCameraComponent* FollowCamera;
 
 
 
@@ -34,12 +35,15 @@ public:
 
 	AActor* GetLevelActor();
 
+	USpotLightComponent* GetFlashlight();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
+	UPROPERTY(EditAnywhere, Category = "Flashlight")
+	USpotLightComponent* Flashlight;
 
-	
 
 
 public:	
