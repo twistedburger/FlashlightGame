@@ -24,14 +24,6 @@ AAaron::AAaron()
 
 }
 
-USpotLightComponent* AAaron::GetFlashlight()
-{
-	if (Flashlight)
-		return Flashlight;
-	else
-		return nullptr;
-}
-
 // Called when the game starts or when spawned
 void AAaron::BeginPlay()
 {
@@ -42,6 +34,14 @@ void AAaron::BeginPlay()
 	
 }
 
+
+USpotLightComponent* AAaron::GetFlashlight()
+{
+	if (Flashlight)
+		return Flashlight;
+	else
+		return nullptr;
+}
 
 AActor* AAaron::GetLevelActor()
 {

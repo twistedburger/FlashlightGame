@@ -59,8 +59,8 @@ void AAaronDefaultController::HandleMove(const FInputActionValue& InputActionVal
 			LevelObject->AddActorLocalRotation(FRotator(0, WalkRotation, 0));
 		}
 
-		PlayerLocation = PlayerCharacter->GetActorLocation();
-		PlayerCharacter->SetActorLocation(FVector(4000, 0, PlayerLocation.Z));
+		//PlayerLocation = PlayerCharacter->GetActorLocation();
+		//PlayerCharacter->SetActorLocation(FVector(4000, 0, PlayerLocation.Z));
 		
 	}
 }

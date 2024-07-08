@@ -34,7 +34,7 @@ protected:
 	virtual void BeginPlay() override;
 	
 	UPROPERTY(EditAnywhere, Category = "Flashlight")
-	USpotLightComponent* Flashlight;
+	USpotLightComponent* Flashlight = nullptr;
 
 
 
