@@ -41,6 +41,7 @@ void AAaron::BeginPlay()
 
 	Flashlight = GetComponentByClass<USpotLightComponent>();
 	Collider = GetComponentByClass<UCapsuleComponent>();
+	Collider->SetGenerateOverlapEvents(true);
 	Collider->OnComponentBeginOverlap.AddDynamic(this, &AAaron::Hit);
 	
 }

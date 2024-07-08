@@ -30,7 +30,7 @@ void AAaronDefaultController::OnPossess(APawn* aPawn)
 		EnhancedInputComponent->BindAction(ActionMove, ETriggerEvent::Triggered, this, &AAaronDefaultController::HandleMove);
 
 	if (ActionLook)
-		EnhancedInputComponent->BindAction(ActionLook, ETriggerEvent::Triggered, this, &AAaronDefaultController::HandleMove);
+		EnhancedInputComponent->BindAction(ActionLook, ETriggerEvent::Triggered, this, &AAaronDefaultController::HandleLook);
 
 
 }
@@ -45,27 +45,44 @@ void AAaronDefaultController::HandleMove(const FInputActionValue& InputActionVal
 {
 	const float Movement = InputActionValue.Get<float>();
 
+	float FlashlightAngle;
+	FVector2D MousePosition;
+
+	MousePosition = OffsetMouseLocation();
+	FlashlightAngle = CalculateLookAngle(MousePosition);
+
 	if (PlayerCharacter)
 	{
 
-		float FlashlightAngle;
-		FVector2D MousePosition;
-
-		MousePosition = OffsetMouseLocation();
-
 		
 		if (MousePosition.X > 0)
-		{ 
-			PlayerCharacter->SetActorRotation(FRotator(0, 0, 0));
 			PlayerCharacter->AddMovementInput(PlayerCharacter->GetActorRightVector(), Movement);
-		}
 		else
-		{
-			PlayerCharacter->SetActorRotation(FRotator(0, 180, 0));
 			PlayerCharacter->AddMovementInput(PlayerCharacter->GetActorRightVector(), -Movement);
-		}
 
-		FlashlightAngle = CalculateLookAngle(MousePosition);
+
+		//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Angle: %f"), FlashlightAngle));
+		
+	}
+}
+
+void AAaronDefaultController::HandleLook(const FInputActionValue& InputActionValue)
+{
+	float FlashlightAngle;
+	FVector2D MousePosition;
+
+	MousePosition = OffsetMouseLocation();
+	FlashlightAngle = CalculateLookAngle(MousePosition);
+
+	if (PlayerCharacter)
+	{
+
+
+		if (MousePosition.X > 0)
+			PlayerCharacter->SetActorRotation(FRotator(0, 0, 0));
+		else
+			PlayerCharacter->SetActorRotation(FRotator(0, 180, 0));
+		
 
 		//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Angle: %f"), FlashlightAngle));
 
@@ -74,18 +91,6 @@ void AAaronDefaultController::HandleMove(const FInputActionValue& InputActionVal
 		{
 			Flashlight->SetRelativeRotation(FRotator(FlashlightAngle, 90, 0));
 		}
-
-		
-
-		
-	}
-}
-
-void AAaronDefaultController::HandleLook(const FInputActionValue& InputActionValue)
-{
-	if (PlayerCharacter)
-	{
-
 
 	}
 }
