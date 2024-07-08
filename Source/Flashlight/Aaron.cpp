@@ -7,6 +7,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/SpotLightComponent.h"
 #include "math.h"
+#include "Components/CapsuleComponent.h"
 
 
 // Sets default values
@@ -15,6 +16,14 @@ AAaron::AAaron()
 
 	Radius = 900.f;
 
+	CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+	CameraArm->SetupAttachment(GetMesh());
+	CameraArm->TargetArmLength = Radius;
+	CameraArm->bUsePawnControlRotation = false;
+
+	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
+	FollowCamera->SetupAttachment(CameraArm, USpringArmComponent::SocketName);
+	FollowCamera->bUsePawnControlRotation = false;
 
 	bUseControllerRotationYaw = false;
 
@@ -31,7 +40,14 @@ void AAaron::BeginPlay()
 	Super::BeginPlay();
 
 	Flashlight = GetComponentByClass<USpotLightComponent>();
+	Collider = GetComponentByClass<UCapsuleComponent>();
+	Collider->OnComponentBeginOverlap.AddDynamic(this, &AAaron::Hit);
 	
+}
+
+void AAaron::Hit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Hit")));
 }
 
 
@@ -43,13 +59,6 @@ USpotLightComponent* AAaron::GetFlashlight()
 		return nullptr;
 }
 
-AActor* AAaron::GetLevelActor()
-{
-	if (Level)
-		return Level;
-	else 
-		return nullptr;
-}
 
 // Called every frame
 void AAaron::Tick(float DeltaTime)

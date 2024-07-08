@@ -30,7 +30,7 @@ void AAaronDefaultController::OnPossess(APawn* aPawn)
 		EnhancedInputComponent->BindAction(ActionMove, ETriggerEvent::Triggered, this, &AAaronDefaultController::HandleMove);
 
 	if (ActionLook)
-		EnhancedInputComponent->BindAction(ActionLook, ETriggerEvent::Triggered, this, &AAaronDefaultController::HandleLook);
+		EnhancedInputComponent->BindAction(ActionLook, ETriggerEvent::Triggered, this, &AAaronDefaultController::HandleMove);
 
 
 }
@@ -47,38 +47,23 @@ void AAaronDefaultController::HandleMove(const FInputActionValue& InputActionVal
 
 	if (PlayerCharacter)
 	{
-		AActor* LevelObject = PlayerCharacter->GetLevelActor();
-		FVector PlayerLocation;
 
-		float WalkRotation = -Movement * Speed * 180 / (4000 * PI);
-		
-
-		if (LevelObject)
-		{
-			LevelObject->SetPivotOffset(FVector(4000, 0, 0));
-			LevelObject->AddActorLocalRotation(FRotator(0, WalkRotation, 0));
-		}
-
-		//PlayerLocation = PlayerCharacter->GetActorLocation();
-		//PlayerCharacter->SetActorLocation(FVector(4000, 0, PlayerLocation.Z));
-		
-	}
-}
-
-void AAaronDefaultController::HandleLook(const FInputActionValue& InputActionValue)
-{
-	const FVector2D LookAxisVector = InputActionValue.Get<FVector2D>();
-	if (PlayerCharacter)
-	{
 		float FlashlightAngle;
 		FVector2D MousePosition;
-		
+
 		MousePosition = OffsetMouseLocation();
+
 		
 		if (MousePosition.X > 0)
+		{ 
 			PlayerCharacter->SetActorRotation(FRotator(0, 0, 0));
+			PlayerCharacter->AddMovementInput(PlayerCharacter->GetActorRightVector(), Movement);
+		}
 		else
+		{
 			PlayerCharacter->SetActorRotation(FRotator(0, 180, 0));
+			PlayerCharacter->AddMovementInput(PlayerCharacter->GetActorRightVector(), -Movement);
+		}
 
 		FlashlightAngle = CalculateLookAngle(MousePosition);
 
@@ -87,8 +72,20 @@ void AAaronDefaultController::HandleLook(const FInputActionValue& InputActionVal
 		USpotLightComponent* Flashlight = PlayerCharacter->GetFlashlight();
 		if (Flashlight)
 		{
-			Flashlight->SetRelativeRotation(FRotator(FlashlightAngle, 90 , 0));
+			Flashlight->SetRelativeRotation(FRotator(FlashlightAngle, 90, 0));
 		}
+
+		
+
+		
+	}
+}
+
+void AAaronDefaultController::HandleLook(const FInputActionValue& InputActionValue)
+{
+	if (PlayerCharacter)
+	{
+
 
 	}
 }
@@ -113,3 +110,4 @@ float AAaronDefaultController::CalculateLookAngle(FVector2D MousePosition)
 {
 	return FMath::Atan(MousePosition.Y / abs(MousePosition.X)) * 180 / PI;
 }
+

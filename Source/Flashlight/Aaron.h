@@ -8,6 +8,7 @@
 #include "Aaron.generated.h"
 
 class USpotLightComponent;
+class uCapsuleComponent;
 
 
 UCLASS()
@@ -19,15 +20,18 @@ public:
 	// Sets default values for this character's properties
 	AAaron();
 
+	UPROPERTY(VisibleAnywhere, Category = "Camera")
+	class USpringArmComponent* CameraArm;
+
+	UPROPERTY(VisibleAnywhere, Category = "Camera")
+	class UCameraComponent* FollowCamera;
+
 	UPROPERTY(EditAnywhere, Category = "Path")
 	float Radius;
 
-	UPROPERTY(EditAnywhere, Category = "Path")
-	AActor* Level = nullptr;
-
-	AActor* GetLevelActor();
-
 	USpotLightComponent* GetFlashlight();
+
+	void Hit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 protected:
 	// Called when the game starts or when spawned
@@ -35,6 +39,7 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category = "Flashlight")
 	USpotLightComponent* Flashlight = nullptr;
+	UCapsuleComponent* Collider = nullptr;
 
 
 
