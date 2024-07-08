@@ -15,14 +15,6 @@ class FLASHLIGHT_API AAaron : public ACharacter
 {
 	GENERATED_BODY()
 
-	//UPROPERTY(VisibleAnywhere, Category = "Camera")
-	//class USpringArmComponent* CameraArm;
-
-	//UPROPERTY(VisibleAnywhere, Category = "Camera")
-	//class UCameraComponent* FollowCamera;
-
-
-
 public:
 	// Sets default values for this character's properties
 	AAaron();

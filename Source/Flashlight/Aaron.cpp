@@ -15,14 +15,6 @@ AAaron::AAaron()
 
 	Radius = 900.f;
 
-	//CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
-	//CameraArm->SetupAttachment(GetMesh());
-	//CameraArm->TargetArmLength = Radius;
-	//CameraArm->bUsePawnControlRotation = false;
-
-	//FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	//FollowCamera->SetupAttachment(CameraArm, USpringArmComponent::SocketName);
-	//FollowCamera->bUsePawnControlRotation = false;
 
 	bUseControllerRotationYaw = false;
 
@@ -47,13 +39,6 @@ void AAaron::BeginPlay()
 	Super::BeginPlay();
 
 	Flashlight = GetComponentByClass<USpotLightComponent>();
-
-
-	//if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
-	//{
-	//	PlayerController->SetShowMouseCursor(true);
-	//	PlayerController->SetInputMode(FInputModeGameAndUI());
-	//}
 	
 }
 
@@ -77,39 +62,6 @@ void AAaron::Tick(float DeltaTime)
 void AAaron::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	//check(PlayerInputComponent);
-	//PlayerInputComponent->BindAxis("Move", this, &AAaron::Move);
 
 }
 
-//void AAaron::Move(float AxisVal)
-//{
-//	if (Controller != NULL && AxisVal != 0.0)
-//	{
-//		//Turn();
-//
-//		AddMovementInput(GetActorRightVector() * AxisVal);
-//		float WalkRotation = AxisVal * 180 / (Radius * M_PI);
-//		AddActorLocalRotation(FRotator(0, WalkRotation, 0));
-//	}
-//
-//}
-//
-//void AAaron::Look(const FInputActionValue& Value)
-//{
-//	FVector2D LookAxisVector = Value.Get<FVector2D>();
-//	AddActorLocalRotation(FRotator(LookAxisVector.X, 0, LookAxisVector.Y));
-//
-//}
-//
-//
-//void AAaron::Turn()
-//{
-//	if (Direction)
-//	{
-//	CameraArm->bUsePawnControlRotation = true;
-//	Direction = false;
-//	GetMesh()->AddLocalRotation(FRotator(0, 180, 0));
-//
-//	}
-//}
