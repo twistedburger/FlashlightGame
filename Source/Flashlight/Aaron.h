@@ -31,7 +31,13 @@ public:
 
 	USpotLightComponent* GetFlashlight();
 
+	UFUNCTION()
 	void Hit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void Leave(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	bool IsHidden;
 
 protected:
 	// Called when the game starts or when spawned

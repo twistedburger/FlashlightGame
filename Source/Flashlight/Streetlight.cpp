@@ -2,6 +2,7 @@
 
 
 #include "Streetlight.h"
+#include "Components/BoxComponent.h"
 
 // Sets default values
 AStreetlight::AStreetlight()
@@ -16,6 +17,8 @@ AStreetlight::AStreetlight()
 void AStreetlight::BeginPlay()
 {
 	Super::BeginPlay();
+	Collider = GetComponentByClass<UBoxComponent>();
+	Collider->SetGenerateOverlapEvents(true);
 	
 }
 
@@ -24,5 +27,10 @@ void AStreetlight::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+FString AStreetlight::GetType()
+{
+	return StreetlightType;
 }
 
