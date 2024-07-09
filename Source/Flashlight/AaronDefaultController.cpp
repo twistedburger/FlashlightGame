@@ -32,7 +32,8 @@ void AAaronDefaultController::OnPossess(APawn* aPawn)
 	if (ActionLook)
 		EnhancedInputComponent->BindAction(ActionLook, ETriggerEvent::Triggered, this, &AAaronDefaultController::HandleLook);
 
-
+	if (ActionJump)
+		EnhancedInputComponent->BindAction(ActionJump, ETriggerEvent::Triggered, this, &AAaronDefaultController::HandleJump);
 }
 
 void AAaronDefaultController::OnUnPossess()
@@ -59,7 +60,6 @@ void AAaronDefaultController::HandleMove(const FInputActionValue& InputActionVal
 			PlayerCharacter->AddMovementInput(PlayerCharacter->GetActorRightVector(), Movement);
 		else
 			PlayerCharacter->AddMovementInput(PlayerCharacter->GetActorRightVector(), -Movement);
-
 
 		//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Angle: %f"), FlashlightAngle));
 		
@@ -92,6 +92,15 @@ void AAaronDefaultController::HandleLook(const FInputActionValue& InputActionVal
 			Flashlight->SetRelativeRotation(FRotator(FlashlightAngle, 90, 0));
 		}
 
+	}
+}
+
+void AAaronDefaultController::HandleJump()
+{
+	if (PlayerCharacter)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Jumped")));
+		PlayerCharacter->Jump();
 	}
 }
 

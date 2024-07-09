@@ -26,6 +26,9 @@ public:
 	UInputAction* ActionLook = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Input|Character Movement")
+	UInputAction* ActionJump = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Input|Character Movement")
 	TObjectPtr<UInputMappingContext> InputMappingContent = nullptr;
 
 	UPROPERTY(EditAnywhere, Category= "Player Input|Character Movement")
@@ -35,6 +38,7 @@ public:
 protected:
 	void HandleMove(const FInputActionValue& InputActionValue);
 	void HandleLook(const FInputActionValue& InputActionValue);
+	void HandleJump();
 
 	FVector2D OffsetMouseLocation();
 	float CalculateLookAngle(FVector2D MousePosition);
