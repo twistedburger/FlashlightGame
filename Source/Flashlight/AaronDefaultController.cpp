@@ -37,7 +37,7 @@ void AAaronDefaultController::OnPossess(APawn* aPawn)
 		EnhancedInputComponent->BindAction(ActionJump, ETriggerEvent::Triggered, this, &AAaronDefaultController::HandleJump);
 
 	if (ActionSprint)
-		EnhancedInputComponent->BindAction(ActionSprint, ETriggerEvent::Started, this, &AAaronDefaultController::HandleSprint);
+		EnhancedInputComponent->BindAction(ActionSprint, ETriggerEvent::Triggered, this, &AAaronDefaultController::HandleSprint);
 
 }
 
@@ -49,8 +49,10 @@ void AAaronDefaultController::OnUnPossess()
 
 void AAaronDefaultController::HandleMove(const FInputActionValue& InputActionValue)
 {
-	const float Movement = InputActionValue.Get<float>();
+	const FVector2D MovementVector = InputActionValue.Get<FVector2D>();
 
+	float Movement = MovementVector.X;
+	float Climb = MovementVector.Y;
 	float FlashlightAngle;
 	FVector2D MousePosition;
 
@@ -66,6 +68,7 @@ void AAaronDefaultController::HandleMove(const FInputActionValue& InputActionVal
 		else
 			PlayerCharacter->AddMovementInput(PlayerCharacter->GetActorRightVector(), -Movement);
 
+		HoldingDown = (Climb < 0);
 		//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Angle: %f"), FlashlightAngle));
 		
 	}
@@ -105,7 +108,13 @@ void AAaronDefaultController::HandleJump()
 	if (PlayerCharacter)
 	{
 		//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Jumped")));
-		PlayerCharacter->Jump();
+		if (HoldingDown)
+		{
+			PlayerCharacter->DownJump();
+			HoldingDown = false;
+		}
+		else
+			PlayerCharacter->Jump();
 	}
 }
 

@@ -10,6 +10,7 @@
 class USpotLightComponent;
 class UCapsuleComponent;
 class UBoxComponent;
+class AJumpingPlatform;
 
 
 UCLASS()
@@ -31,7 +32,9 @@ public:
 	float Radius;
 
 	UPROPERTY(EditAnywhere, Category = "Jump")
-	bool CanDownJump = false;
+
+	AJumpingPlatform* CurrentPlatform = nullptr;
+	void DownJump();
 
 	USpotLightComponent* GetFlashlight();
 

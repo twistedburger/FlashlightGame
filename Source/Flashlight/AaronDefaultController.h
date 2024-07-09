@@ -44,6 +44,8 @@ protected:
 	void HandleSprint();
 	void HandleJump();
 
+	bool HoldingDown = false;
+
 	FVector2D OffsetMouseLocation();
 	float CalculateLookAngle(FVector2D MousePosition);
 

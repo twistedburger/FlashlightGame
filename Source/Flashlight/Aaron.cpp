@@ -79,7 +79,8 @@ void AAaron::OnPlatform(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 {
 	if (AJumpingPlatform* Platform = Cast<AJumpingPlatform>(OtherActor))
 	{
-		Platform->EnablePlatform();
+		CurrentPlatform = Platform;
+		CurrentPlatform->EnablePlatform();
 	}
 }
 
@@ -88,6 +89,7 @@ void AAaron::NotOnPlatform(UPrimitiveComponent* OverlappedComp, AActor* OtherAct
 	if (AJumpingPlatform* Platform = Cast<AJumpingPlatform>(OtherActor))
 	{
 		Platform->DisablePlatform();
+		CurrentPlatform = nullptr;
 	}
 }
 
@@ -96,6 +98,14 @@ void AAaron::Leave(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPri
 	IsHidden = false;
 }
 
+
+void AAaron::DownJump()
+{
+	if (CurrentPlatform)
+	{
+		CurrentPlatform->DisablePlatform();
+	}
+}
 
 USpotLightComponent* AAaron::GetFlashlight()
 {
