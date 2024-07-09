@@ -2,13 +2,15 @@
 
 #define _USE_MATH_DEFINES
 #include "Aaron.h"
-#include "Streetlight.h"
-#include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "Components/SpotLightComponent.h"
-#include "math.h"
+#include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/SpotLightComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "math.h"
+#include "Streetlight.h"
+#include "JumpingPlatform.h"
 
 
 // Sets default values
@@ -45,18 +47,24 @@ void AAaron::BeginPlay()
 	Super::BeginPlay();
 
 	Flashlight = GetComponentByClass<USpotLightComponent>();
-	Collider = GetComponentByClass<UCapsuleComponent>();
-	Collider->SetGenerateOverlapEvents(true);
-	Collider->OnComponentBeginOverlap.AddDynamic(this, &AAaron::Hit);
-	Collider->OnComponentEndOverlap.AddDynamic(this, &AAaron::Leave);
+	PrimaryCollider = GetComponentByClass<UCapsuleComponent>();
+	PrimaryCollider->SetGenerateOverlapEvents(true);
+	PrimaryCollider->OnComponentBeginOverlap.AddDynamic(this, &AAaron::Hit);
+	PrimaryCollider->OnComponentEndOverlap.AddDynamic(this, &AAaron::Leave);
 	
+	PlatformCollider = GetComponentByClass<UBoxComponent>();
+	PlatformCollider->SetGenerateOverlapEvents(true);
+	PlatformCollider->OnComponentBeginOverlap.AddDynamic(this, &AAaron::OnPlatform);
+	PlatformCollider->OnComponentEndOverlap.AddDynamic(this, &AAaron::NotOnPlatform);
 }
 
 void AAaron::Hit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {	
-	IPrimaryInterface* OverlappedObject = Cast<IPrimaryInterface>(OtherActor);
+	if (IPrimaryInterface* OverlappedObject = Cast<IPrimaryInterface>(OtherActor))
+	{
 	FString Type = OverlappedObject->ReactToTrigger();
 	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, Type);
+	}
 	//if(AStreetlight* Streetlight = Cast<AStreetlight>(OtherActor))
 	//{
 	//	FString Type = Streetlight->GetType();
@@ -65,6 +73,22 @@ void AAaron::Hit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimi
 	//	IsHidden = true;
 	//}
 
+}
+
+void AAaron::OnPlatform(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (AJumpingPlatform* Platform = Cast<AJumpingPlatform>(OtherActor))
+	{
+		Platform->EnablePlatform();
+	}
+}
+
+void AAaron::NotOnPlatform(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if (AJumpingPlatform* Platform = Cast<AJumpingPlatform>(OtherActor))
+	{
+		Platform->DisablePlatform();
+	}
 }
 
 void AAaron::Leave(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)

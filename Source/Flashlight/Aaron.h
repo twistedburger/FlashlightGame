@@ -8,7 +8,8 @@
 #include "Aaron.generated.h"
 
 class USpotLightComponent;
-class uCapsuleComponent;
+class UCapsuleComponent;
+class UBoxComponent;
 
 
 UCLASS()
@@ -29,10 +30,19 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Path")
 	float Radius;
 
+	UPROPERTY(EditAnywhere, Category = "Jump")
+	bool CanDownJump = false;
+
 	USpotLightComponent* GetFlashlight();
 
 	UFUNCTION()
 	void Hit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnPlatform(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void NotOnPlatform(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	UFUNCTION()
 	void Leave(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
@@ -45,7 +55,8 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category = "Flashlight")
 	USpotLightComponent* Flashlight = nullptr;
-	UCapsuleComponent* Collider = nullptr;
+	UCapsuleComponent* PrimaryCollider = nullptr;
+	UBoxComponent* PlatformCollider = nullptr;
 
 
 

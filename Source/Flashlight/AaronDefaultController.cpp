@@ -104,7 +104,7 @@ void AAaronDefaultController::HandleJump()
 {
 	if (PlayerCharacter)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Jumped")));
+		//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Jumped")));
 		PlayerCharacter->Jump();
 	}
 }
