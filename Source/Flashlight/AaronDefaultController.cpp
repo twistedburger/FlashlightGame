@@ -7,6 +7,7 @@
 #include "Math/UnrealMathUtility.h"
 #include <EnhancedInputSubsystems.h>
 #include "Components/SpotLightComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 
 void AAaronDefaultController::OnPossess(APawn* aPawn)
@@ -34,6 +35,10 @@ void AAaronDefaultController::OnPossess(APawn* aPawn)
 
 	if (ActionJump)
 		EnhancedInputComponent->BindAction(ActionJump, ETriggerEvent::Triggered, this, &AAaronDefaultController::HandleJump);
+
+	if (ActionSprint)
+		EnhancedInputComponent->BindAction(ActionSprint, ETriggerEvent::Started, this, &AAaronDefaultController::HandleSprint);
+
 }
 
 void AAaronDefaultController::OnUnPossess()
@@ -52,10 +57,10 @@ void AAaronDefaultController::HandleMove(const FInputActionValue& InputActionVal
 	MousePosition = OffsetMouseLocation();
 	FlashlightAngle = CalculateLookAngle(MousePosition);
 
+
 	if (PlayerCharacter)
 	{
 
-		
 		if (MousePosition.X > 0)
 			PlayerCharacter->AddMovementInput(PlayerCharacter->GetActorRightVector(), Movement);
 		else
@@ -103,6 +108,16 @@ void AAaronDefaultController::HandleJump()
 		PlayerCharacter->Jump();
 	}
 }
+
+void AAaronDefaultController::HandleSprint()
+{	
+		UCharacterMovementComponent* CharacterMovement = PlayerCharacter->GetCharacterMovement();
+		if (CharacterMovement->MaxWalkSpeed == 600.f)
+			CharacterMovement->MaxWalkSpeed = 900.f;
+		else
+			CharacterMovement->MaxWalkSpeed = 600.f;
+}
+
 
 FVector2D AAaronDefaultController::OffsetMouseLocation()
 {
