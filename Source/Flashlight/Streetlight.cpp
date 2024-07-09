@@ -34,3 +34,9 @@ FString AStreetlight::GetType()
 	return StreetlightType;
 }
 
+FString AStreetlight::ReactToTrigger()
+{
+
+	return StreetlightType;
+}
+

@@ -53,13 +53,17 @@ void AAaron::BeginPlay()
 }
 
 void AAaron::Hit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if(AStreetlight* Streetlight = Cast<AStreetlight>(OtherActor))
-	{
-		FString Type = Streetlight->GetType();
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, Type);
-		IsHidden = true;
-	}
+{	
+	IPrimaryInterface* OverlappedObject = Cast<IPrimaryInterface>(OtherActor);
+	FString Type = OverlappedObject->ReactToTrigger();
+	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, Type);
+	//if(AStreetlight* Streetlight = Cast<AStreetlight>(OtherActor))
+	//{
+	//	FString Type = Streetlight->GetType();
+	//	
+	//	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, Type);
+	//	IsHidden = true;
+	//}
 
 }
 
@@ -83,7 +87,7 @@ void AAaron::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	FString hidden = IsHidden ? "True" : "False";
-	GEngine->AddOnScreenDebugMessage(-1, 0.49f, FColor::Red, hidden);
+	//GEngine->AddOnScreenDebugMessage(-1, 0.49f, FColor::Red, hidden);
 }
 
 // Called to bind functionality to input

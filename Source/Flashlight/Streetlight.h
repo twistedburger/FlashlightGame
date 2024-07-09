@@ -24,6 +24,8 @@ public:
 
 	FString GetType();
 
+	virtual FString ReactToTrigger() override;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

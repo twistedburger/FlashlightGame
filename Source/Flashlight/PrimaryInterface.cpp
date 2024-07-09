@@ -5,7 +5,7 @@
 
 // Add default functionality here for any IPrimaryInterface functions that are not pure virtual.
 
-bool IPrimaryInterface::ReactToTrigger()
+FString IPrimaryInterface::ReactToTrigger()
 {
-	return false;
+	return "";
 }
