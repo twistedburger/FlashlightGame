@@ -21,7 +21,7 @@ public:
 	virtual void BeginPlay() override;
 
 	FVector StartingLocation;
-
+	FVector EndingLocation;
 	
 
 	UFUNCTION()

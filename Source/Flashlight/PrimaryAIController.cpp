@@ -10,6 +10,8 @@ void APrimaryAIController::BeginPlay()
 	Super::BeginPlay();
 
 	StartingLocation = GetPawn()->GetActorLocation();
+	EndingLocation = StartingLocation;
+	EndingLocation.Y += 600;
 	NavArea = FNavigationSystem::GetCurrent<UNavigationSystemV1>(this);
 
 	Patrol();
@@ -20,12 +22,13 @@ void APrimaryAIController::Patrol()
 	FVector CurrentLocation = GetPawn()->GetActorLocation();
 	FVector Destination = CurrentLocation;
 	float Tolerance = 20;
-	if (CurrentLocation.Y <= StartingLocation.Y + Tolerance)
-		Destination.Y += 600;
+	if (CurrentLocation.Y <= StartingLocation.Y)
+		Destination.Y += 50;
+	else if (CurrentLocation.Y <= EndingLocation.Y)
+		Destination.Y += 550;
 	else
-		Destination.Y -= 600;
-		
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Red, FString::Printf(TEXT("Y: %f"), CurrentLocation.Y));
+		Destination.Y -= 650;
+
 	MoveToLocation(Destination);
 
 

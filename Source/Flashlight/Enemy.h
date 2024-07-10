@@ -9,7 +9,8 @@
 
 class APrimaryAIController;
 class UBoxComponent;
-class UCapsuleComponent;
+class USphereComponent;
+class AAaron;
 
 UCLASS()
 class FLASHLIGHT_API AEnemy : public ACharacter
@@ -23,15 +24,19 @@ public:
 
 	APrimaryAIController* PrimaryAIController;
 
+	AAaron* Aaron;
+
 	void OnAIMoveCompleted(struct FAIRequestID RequestID, const struct FPathFollowingResult& Result);
 
 	UBoxComponent* Vision;
-	UCapsuleComponent* Attack;
+	USphereComponent* Attack;
 
 	UPROPERTY(EditAnywhere)
 	float StoppingDistance = 100.0f;
 
 	FTimerHandle SeekPlayerTimerHandle;
+
+	bool PlayerDetected;
 
 	UFUNCTION()
 	void MoveToPlayer();
@@ -61,11 +66,6 @@ public:
 	void OnPlayerAttackOverlapEnd(class UPrimitiveComponent* OverlappedComp,
 		class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex);
-
-	UFUNCTION()
-	void OnDealDamageOverlapBegin(class UPrimitiveComponent* OverlappedComp,
-		class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
-		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 protected:
 	// Called when the game starts or when spawned

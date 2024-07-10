@@ -6,15 +6,15 @@
 #include "Navigation/PathFollowingComponent.h"
 #include "AITypes.h"
 #include "Components/BoxComponent.h"
-#include "Components/CapsuleComponent.h"
+#include "Components/SphereComponent.h"
+#include "Aaron.h"
 
 // Sets default values
 AEnemy::AEnemy()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	Vision = GetComponentByClass<UBoxComponent>();
-	Attack = GetComponentByClass<UCapsuleComponent>();
+
 }
 
 
@@ -23,6 +23,13 @@ void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
+	Vision = GetComponentByClass<UBoxComponent>();
+	Vision->OnComponentBeginOverlap.AddDynamic(this, &AEnemy::OnPlayerDetectedOverlapBegin);
+	Vision->OnComponentEndOverlap.AddDynamic(this, &AEnemy::OnPlayerDetectedOverlapEnd);
+
+	Attack = GetComponentByClass<USphereComponent>();
+	Attack->OnComponentBeginOverlap.AddDynamic(this, &AEnemy::OnPlayerAttackOverlapBegin);
+	Attack->OnComponentEndOverlap.AddDynamic(this, &AEnemy::OnPlayerAttackOverlapEnd);
 
 	PrimaryAIController = Cast<APrimaryAIController>(GetController());
 	PrimaryAIController->GetPathFollowingComponent()->OnRequestFinished.AddUObject(this, &AEnemy::OnAIMoveCompleted);
@@ -31,43 +38,56 @@ void AEnemy::BeginPlay()
 
 void AEnemy::OnAIMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result)
 {
-
-		PrimaryAIController->Patrol();
-
-
+	PrimaryAIController->Patrol();
 }
 
 void AEnemy::MoveToPlayer()
 {
+	PrimaryAIController->MoveToLocation(Aaron->GetActorLocation(), StoppingDistance, true);
 }
 
 void AEnemy::SeekPlayer()
 {
+	MoveToPlayer();
+	GetWorld()->GetTimerManager().SetTimer(SeekPlayerTimerHandle, this, &AEnemy::SeekPlayer, 0.25f, true);
 }
 
 void AEnemy::StopSeekingPlayer()
 {
+	GetWorld()->GetTimerManager().ClearTimer(SeekPlayerTimerHandle);
 }
 
 void AEnemy::OnPlayerDetectedOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (AAaron* AaronRef = Cast<AAaron>(OtherActor)) 
+	{
+		Aaron = AaronRef;
+		PlayerDetected = true;
+		SeekPlayer();
+	}
 }
 
 void AEnemy::OnPlayerDetectedOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
+	if (AAaron* AaronRef = Cast<AAaron>(OtherActor))
+	{
+		PlayerDetected = false;
+		StopSeekingPlayer();
+		PrimaryAIController->Patrol();
+	}
 }
 
 void AEnemy::OnPlayerAttackOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, "DEAD");
+	
 }
 
 void AEnemy::OnPlayerAttackOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 }
 
-void AEnemy::OnDealDamageOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-}
 
 // Called every frame
 void AEnemy::Tick(float DeltaTime)
