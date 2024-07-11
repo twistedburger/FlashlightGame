@@ -9,7 +9,8 @@
 #include "Components/SpotLightComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
-#include "Camera/CameraActor.h"
+#include "PrimaryCamera.h"
+#include "LevelTerrain.h"
 
 void AAaronDefaultController::OnPossess(APawn* aPawn)
 {
@@ -20,11 +21,13 @@ void AAaronDefaultController::OnPossess(APawn* aPawn)
 
 	CameraReference = PlayerCharacter->FollowCamera;
 
-	CameraStart = PlayerCharacter->GetActorLocation();
-	CameraStart.X -= CameraDistance;
+	CameraStart = SetCameraPosition(CameraHeight);
 	
+	LevelStart = SetLevelPosition();
+
 	LastCameraPosition = CameraStart;
 	CameraReference->SetActorLocation(CameraStart);
+	CameraReference->Level->SetActorLocation(CameraStart);
 
 	EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
 	checkf(EnhancedInputComponent, TEXT("Unable to get reference to the EnchancedInputComponent."));
@@ -58,6 +61,26 @@ void AAaronDefaultController::OnUnPossess()
 	Super::OnUnPossess();
 }
 
+FVector AAaronDefaultController::SetCameraPosition(float Height = 0.f)
+{
+	FVector Location = PlayerCharacter->GetActorLocation();
+	Location.X -= CameraDistance;
+	if (CameraStart.Z != NULL)
+		Location.Z = CameraStart.Z;
+	else
+		Location.Z += Height;
+
+	return Location;
+}
+
+FVector AAaronDefaultController::SetLevelPosition()
+{
+	FVector Location = CameraStart;
+	Location.Z -= LevelOffset;
+
+	return Location;
+}
+
 void AAaronDefaultController::HandleMove(const FInputActionValue& InputActionValue)
 {
 	const FVector2D MovementVector = InputActionValue.Get<FVector2D>();
@@ -78,6 +101,8 @@ void AAaronDefaultController::HandleMove(const FInputActionValue& InputActionVal
 			PlayerCharacter->AddMovementInput(PlayerCharacter->GetActorRightVector(), Movement);
 		else
 			PlayerCharacter->AddMovementInput(PlayerCharacter->GetActorRightVector(), -Movement);
+
+		
 
 		//MoveCamera();
 
@@ -137,20 +162,25 @@ void AAaronDefaultController::MoveCamera(float DeltaTime, float LerpTime)
 	{
 		if (TimeElapsed == 0)
 		{
-			FVector PlayerLocation = PlayerCharacter->GetActorLocation();
-			CameraDestination = CameraStart;
-			CameraDestination.Y = PlayerLocation.Y;
+			CameraDestination = SetCameraPosition();
+			LevelDestination = SetLevelPosition();
 
 		}
 		if (TimeElapsed < LerpTime)
 		{
 			FVector Movement = FMath::Lerp(LastCameraPosition, CameraDestination, TimeElapsed/LerpTime);
+			FVector LevelMovement = FMath::Lerp(LastLevelPosition, LevelDestination, TimeElapsed/LerpTime);
 			CameraReference->SetActorLocation(Movement);
+			CameraReference->Level->SetActorLocation(LevelMovement);
+			float LevelRotationDistance = (LastCameraPosition.Y - Movement.Y)/10;
+			CameraReference->Level->RotateLevel(4000.f, LevelRotationDistance );
+			//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("rotation distance: %f"), LevelRotationDistance));
 			TimeElapsed += DeltaTime;
 		}
 		else
 		{
 			LastCameraPosition = CameraDestination;
+			LastLevelPosition = LevelDestination;
 			TimeElapsed = 0.f;
 		}
 	}

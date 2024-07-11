@@ -11,7 +11,7 @@
 class UInputMappingContext;
 class UEnhancedInputComponent;
 class AAaron;
-class ACameraActor;
+class APrimaryCamera;
 
 
 UCLASS(Abstract)
@@ -44,6 +44,14 @@ public:
 	void MoveCamera(float DeltaTime, float LerpTime);
 	FVector LastCameraPosition;
 	FVector CameraDestination;
+	FVector LastLevelPosition;
+	FVector LevelDestination;
+
+	UPROPERTY(EditAnywhere, Category = "Camera")
+	float CameraHeight = 0.f;
+
+	UPROPERTY(EditAnywhere, Category = "Camera")
+	float LevelOffset = 150.f;
 
 protected:
 	void HandleMove(const FInputActionValue& InputActionValue);
@@ -60,10 +68,15 @@ protected:
 	virtual void OnPossess(APawn* aPawn) override;
 	virtual void OnUnPossess() override;
 
-	ACameraActor* CameraReference;
+	APrimaryCamera* CameraReference;
 	FVector CameraStart;
+	FVector LevelStart;
 
 	float TimeElapsed;
+
+	FVector SetCameraPosition(float Height);
+	FVector SetLevelPosition();
+
 
 private:
 	UPROPERTY()

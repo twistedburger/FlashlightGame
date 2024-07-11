@@ -27,7 +27,7 @@ public:
 	class USpringArmComponent* CameraArm;
 
 	UPROPERTY(EditAnywhere, Category = "Camera")
-	class ACameraActor* FollowCamera = nullptr;
+	class APrimaryCamera* FollowCamera = nullptr;
 
 	UPROPERTY(EditAnywhere, Category = "Path")
 	float Radius;

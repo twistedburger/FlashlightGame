@@ -6,6 +6,8 @@
 #include "Camera/CameraActor.h"
 #include "PrimaryCamera.generated.h"
 
+class ALevelTerrain;
+
 /**
  * 
  */
@@ -14,4 +16,8 @@ class FLASHLIGHT_API APrimaryCamera : public ACameraActor
 {
 	GENERATED_BODY()
 	
+public:
+	UPROPERTY(EditAnywhere, Category="Level")
+	ALevelTerrain* Level = nullptr;
+
 };
