@@ -9,6 +9,7 @@
 #include "Components/SpotLightComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
+#include "Camera/CameraActor.h"
 
 void AAaronDefaultController::OnPossess(APawn* aPawn)
 {
@@ -16,6 +17,14 @@ void AAaronDefaultController::OnPossess(APawn* aPawn)
 
 	PlayerCharacter = Cast<AAaron>(aPawn);
 	checkf(PlayerCharacter, TEXT("Only AAaron derived classes should only possess AAaron pawns"));
+
+	CameraReference = PlayerCharacter->FollowCamera;
+
+	CameraStart = PlayerCharacter->GetActorLocation();
+	CameraStart.X -= CameraDistance;
+	
+	LastCameraPosition = CameraStart;
+	CameraReference->SetActorLocation(CameraStart);
 
 	EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
 	checkf(EnhancedInputComponent, TEXT("Unable to get reference to the EnchancedInputComponent."));
@@ -38,6 +47,8 @@ void AAaronDefaultController::OnPossess(APawn* aPawn)
 
 	if (ActionSprint)
 		EnhancedInputComponent->BindAction(ActionSprint, ETriggerEvent::Triggered, this, &AAaronDefaultController::HandleSprint);
+
+	TimeElapsed = 0.f;
 
 }
 
@@ -68,6 +79,8 @@ void AAaronDefaultController::HandleMove(const FInputActionValue& InputActionVal
 		else
 			PlayerCharacter->AddMovementInput(PlayerCharacter->GetActorRightVector(), -Movement);
 
+		//MoveCamera();
+
 		HoldingDown = (Climb < 0);
 		//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Angle: %f"), FlashlightAngle));
 		
@@ -84,7 +97,7 @@ void AAaronDefaultController::HandleLook(const FInputActionValue& InputActionVal
 
 	if (PlayerCharacter)
 	{
-
+		//MoveCamera();
 
 		if (MousePosition.X > 0)
 			PlayerCharacter->SetActorRotation(FRotator(0, 0, 0));
@@ -117,6 +130,32 @@ void AAaronDefaultController::HandleJump()
 			PlayerCharacter->Jump();
 	}
 }
+
+void AAaronDefaultController::MoveCamera(float DeltaTime, float LerpTime)
+{
+	if (PlayerCharacter)
+	{
+		if (TimeElapsed == 0)
+		{
+			FVector PlayerLocation = PlayerCharacter->GetActorLocation();
+			CameraDestination = CameraStart;
+			CameraDestination.Y = PlayerLocation.Y;
+
+		}
+		if (TimeElapsed < LerpTime)
+		{
+			FVector Movement = FMath::Lerp(LastCameraPosition, CameraDestination, TimeElapsed/LerpTime);
+			CameraReference->SetActorLocation(Movement);
+			TimeElapsed += DeltaTime;
+		}
+		else
+		{
+			LastCameraPosition = CameraDestination;
+			TimeElapsed = 0.f;
+		}
+	}
+}
+
 
 void AAaronDefaultController::HandleSprint()
 {	

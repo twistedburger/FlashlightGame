@@ -11,6 +11,7 @@ class USpotLightComponent;
 class UCapsuleComponent;
 class UBoxComponent;
 class AJumpingPlatform;
+class AAaronDefaultController;
 
 
 UCLASS()
@@ -25,8 +26,8 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "Camera")
 	class USpringArmComponent* CameraArm;
 
-	UPROPERTY(VisibleAnywhere, Category = "Camera")
-	class UCameraComponent* FollowCamera;
+	UPROPERTY(EditAnywhere, Category = "Camera")
+	class ACameraActor* FollowCamera = nullptr;
 
 	UPROPERTY(EditAnywhere, Category = "Path")
 	float Radius;
@@ -37,6 +38,8 @@ public:
 	void DownJump();
 
 	USpotLightComponent* GetFlashlight();
+
+	float ZLocation;
 
 	UFUNCTION()
 	void Hit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -51,6 +54,11 @@ public:
 	void Leave(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	bool IsHidden;
+
+	AAaronDefaultController* AaronController;
+
+	UPROPERTY(EditAnywhere, Category="LERP")
+	float LerpTime =0.72f;
 
 protected:
 	// Called when the game starts or when spawned

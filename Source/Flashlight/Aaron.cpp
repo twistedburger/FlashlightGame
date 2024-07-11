@@ -11,7 +11,7 @@
 #include "math.h"
 #include "Streetlight.h"
 #include "JumpingPlatform.h"
-
+#include "AaronDefaultController.h"
 
 // Sets default values
 AAaron::AAaron()
@@ -19,24 +19,30 @@ AAaron::AAaron()
 
 	Radius = 900.f;
 
-	CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+	/*CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraArm->SetupAttachment(GetMesh());
 	CameraArm->TargetArmLength = Radius;
 	CameraArm->bUsePawnControlRotation = false;
 
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraArm, USpringArmComponent::SocketName);
-	FollowCamera->bUsePawnControlRotation = false;
+	FollowCamera->bUsePawnControlRotation = false;*/
+
+	ZLocation = GetActorLocation().Z;
+
+	
 
 	bUseControllerRotationYaw = false;
 
 
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	SetActorTickInterval(0.5f);
+	PrimaryActorTick.TickInterval = -1;
 	AActor::SetActorTickEnabled(true);
 
 	IsHidden = false;
+
+	GetCharacterMovement()->JumpZVelocity = 400.f;
 
 }
 
@@ -56,6 +62,8 @@ void AAaron::BeginPlay()
 	PlatformCollider->SetGenerateOverlapEvents(true);
 	PlatformCollider->OnComponentBeginOverlap.AddDynamic(this, &AAaron::OnPlatform);
 	PlatformCollider->OnComponentEndOverlap.AddDynamic(this, &AAaron::NotOnPlatform);
+
+	AaronController = Cast<AAaronDefaultController>(GetController());
 }
 
 void AAaron::Hit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -120,7 +128,12 @@ USpotLightComponent* AAaron::GetFlashlight()
 void AAaron::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	FString hidden = IsHidden ? "True" : "False";
+	
+	
+	AaronController->MoveCamera(DeltaTime, LerpTime);
+
+	//FString hidden = IsHidden ? "True" : "False";
+
 	//GEngine->AddOnScreenDebugMessage(-1, 0.49f, FColor::Red, hidden);
 }
 

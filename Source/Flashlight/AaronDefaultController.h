@@ -11,6 +11,7 @@
 class UInputMappingContext;
 class UEnhancedInputComponent;
 class AAaron;
+class ACameraActor;
 
 
 UCLASS(Abstract)
@@ -37,12 +38,19 @@ public:
 	UPROPERTY(EditAnywhere, Category= "Player Input|Character Movement")
 	float Speed = 10.0f;
 
+	UPROPERTY(EditAnywhere, Category = "Camera")
+	float CameraDistance = 900.f;
+
+	void MoveCamera(float DeltaTime, float LerpTime);
+	FVector LastCameraPosition;
+	FVector CameraDestination;
 
 protected:
 	void HandleMove(const FInputActionValue& InputActionValue);
 	void HandleLook(const FInputActionValue& InputActionValue);
 	void HandleSprint();
 	void HandleJump();
+
 
 	bool HoldingDown = false;
 
@@ -52,6 +60,10 @@ protected:
 	virtual void OnPossess(APawn* aPawn) override;
 	virtual void OnUnPossess() override;
 
+	ACameraActor* CameraReference;
+	FVector CameraStart;
+
+	float TimeElapsed;
 
 private:
 	UPROPERTY()
