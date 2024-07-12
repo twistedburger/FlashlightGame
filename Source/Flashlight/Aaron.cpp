@@ -12,6 +12,7 @@
 #include "Streetlight.h"
 #include "JumpingPlatform.h"
 #include "AaronDefaultController.h"
+#include "Camera/CameraActor.h"
 
 // Sets default values
 AAaron::AAaron()
@@ -72,6 +73,11 @@ void AAaron::Hit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimi
 	{
 	FString Type = OverlappedObject->ReactToTrigger();
 	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, Type);
+	if (OverlappedObject->CheckIfHideaway())
+		IsHidden = true;
+	if(IsHidden)
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, "Hidden");
+
 	}
 	//if(AStreetlight* Streetlight = Cast<AStreetlight>(OtherActor))
 	//{
@@ -103,7 +109,11 @@ void AAaron::NotOnPlatform(UPrimitiveComponent* OverlappedComp, AActor* OtherAct
 
 void AAaron::Leave(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	IsHidden = false;
+	if (IPrimaryInterface* OverlappedObject = Cast<IPrimaryInterface>(OtherActor))
+	{
+		if (OverlappedObject->CheckIfHideaway())
+			IsHidden = false;
+	}
 }
 
 
@@ -129,8 +139,8 @@ void AAaron::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-	
-	AaronController->MoveCamera(DeltaTime, LerpTime);
+	if(FollowCamera)
+		AaronController->MoveCamera(DeltaTime, LerpTime);
 
 	//FString hidden = IsHidden ? "True" : "False";
 

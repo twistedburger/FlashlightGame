@@ -11,6 +11,7 @@ class APrimaryAIController;
 class UBoxComponent;
 class USphereComponent;
 class AAaron;
+class UStaticMeshComponent;
 
 UCLASS()
 class FLASHLIGHT_API AEnemy : public ACharacter
@@ -30,6 +31,8 @@ public:
 
 	UBoxComponent* Vision;
 	USphereComponent* Attack;
+
+	UStaticMeshComponent* Speech;
 
 	UPROPERTY(EditAnywhere)
 	float StoppingDistance = 100.0f;

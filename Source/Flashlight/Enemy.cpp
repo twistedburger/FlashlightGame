@@ -43,7 +43,9 @@ void AEnemy::OnAIMoveCompleted(FAIRequestID RequestID, const FPathFollowingResul
 
 void AEnemy::MoveToPlayer()
 {
-	PrimaryAIController->MoveToLocation(Aaron->GetActorLocation(), StoppingDistance, true);
+	FVector AaronLocation = Aaron->GetActorLocation();
+	AaronLocation.X = 0;
+	PrimaryAIController->MoveToLocation(AaronLocation, StoppingDistance, true);
 }
 
 void AEnemy::SeekPlayer()
@@ -63,7 +65,8 @@ void AEnemy::OnPlayerDetectedOverlapBegin(UPrimitiveComponent* OverlappedComp, A
 	{
 		Aaron = AaronRef;
 		PlayerDetected = true;
-		SeekPlayer();
+		if(Aaron->GetActorLocation().X < 5)
+			SeekPlayer();
 	}
 }
 

@@ -11,10 +11,11 @@ AHideaway::AHideaway()
 
 }
 
-FString AHideaway::ReactToTrigger()
+bool AHideaway::CheckIfHideaway()
 {
-	return "This is a hideaway!";
+	return true;
 }
+
 
 // Called when the game starts or when spawned
 void AHideaway::BeginPlay()

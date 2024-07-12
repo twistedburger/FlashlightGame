@@ -15,7 +15,7 @@ class FLASHLIGHT_API AHideaway : public AActor, public IPrimaryInterface
 public:	
 	// Sets default values for this actor's properties
 	AHideaway();
-	virtual FString ReactToTrigger() override;
+	virtual bool CheckIfHideaway() override;
 
 protected:
 	// Called when the game starts or when spawned

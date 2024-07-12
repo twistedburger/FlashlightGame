@@ -9,3 +9,9 @@ FString IPrimaryInterface::ReactToTrigger()
 {
 	return "";
 }
+
+bool IPrimaryInterface::CheckIfHideaway()
+{
+	return false;
+}
+

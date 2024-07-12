@@ -20,7 +20,10 @@ void APrimaryAIController::BeginPlay()
 void APrimaryAIController::Patrol()
 {
 	FVector CurrentLocation = GetPawn()->GetActorLocation();
+	CurrentLocation.X = 0;
+	GetPawn()->SetActorLocation(CurrentLocation);
 	FVector Destination = CurrentLocation;
+	
 	float Tolerance = 20;
 	if (CurrentLocation.Y <= StartingLocation.Y)
 		Destination.Y += 50;

@@ -51,6 +51,10 @@ void AAaronDefaultController::OnPossess(APawn* aPawn)
 	if (ActionSprint)
 		EnhancedInputComponent->BindAction(ActionSprint, ETriggerEvent::Triggered, this, &AAaronDefaultController::HandleSprint);
 
+	if(ActionInteract)
+		EnhancedInputComponent->BindAction(ActionInteract, ETriggerEvent::Triggered, this, &AAaronDefaultController::HandleInteract);
+
+
 	TimeElapsed = 0.f;
 
 }
@@ -97,12 +101,17 @@ void AAaronDefaultController::HandleMove(const FInputActionValue& InputActionVal
 	if (PlayerCharacter)
 	{
 
+
+		if (PlayerCharacter->IsHidden)
+		{
+			FVector PlayerPosition = PlayerCharacter->GetActorLocation();
+			PlayerPosition.X = 0;
+			PlayerCharacter->SetActorLocation(PlayerPosition);
+		}
 		if (MousePosition.X > 0)
 			PlayerCharacter->AddMovementInput(PlayerCharacter->GetActorRightVector(), Movement);
 		else
 			PlayerCharacter->AddMovementInput(PlayerCharacter->GetActorRightVector(), -Movement);
-
-		
 
 		//MoveCamera();
 
@@ -156,6 +165,22 @@ void AAaronDefaultController::HandleJump()
 	}
 }
 
+void AAaronDefaultController::HandleInteract()
+{
+	if (PlayerCharacter)
+	{
+		if (PlayerCharacter->IsHidden)
+		{
+			FVector PlayerPosition = PlayerCharacter->GetActorLocation();
+			if (PlayerPosition.X < 5)
+				PlayerPosition.X = 230;
+			else
+				PlayerPosition.X = 0;
+			PlayerCharacter->SetActorLocation(PlayerPosition);
+		}
+	}
+}
+
 void AAaronDefaultController::MoveCamera(float DeltaTime, float LerpTime)
 {
 	if (PlayerCharacter)
@@ -171,9 +196,12 @@ void AAaronDefaultController::MoveCamera(float DeltaTime, float LerpTime)
 			FVector Movement = FMath::Lerp(LastCameraPosition, CameraDestination, TimeElapsed/LerpTime);
 			FVector LevelMovement = FMath::Lerp(LastLevelPosition, LevelDestination, TimeElapsed/LerpTime);
 			CameraReference->SetActorLocation(Movement);
+			if (CameraReference->Level)
+			{
 			CameraReference->Level->SetActorLocation(LevelMovement);
-			float LevelRotationDistance = (LastCameraPosition.Y - Movement.Y)/10;
+			float LevelRotationDistance = (LastCameraPosition.Y - Movement.Y)/100;
 			CameraReference->Level->RotateLevel(4000.f, LevelRotationDistance );
+			}
 			//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("rotation distance: %f"), LevelRotationDistance));
 			TimeElapsed += DeltaTime;
 		}

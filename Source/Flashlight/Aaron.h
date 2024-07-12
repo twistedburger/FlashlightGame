@@ -53,6 +53,7 @@ public:
 	UFUNCTION()
 	void Leave(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	UPROPERTY(VisibleAnywhere)
 	bool IsHidden;
 
 	AAaronDefaultController* AaronController;

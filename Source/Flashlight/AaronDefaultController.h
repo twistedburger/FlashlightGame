@@ -33,6 +33,10 @@ public:
 	UInputAction* ActionSprint = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Input|Character Movement")
+	UInputAction* ActionInteract = nullptr;
+
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Input|Character Movement")
 	TObjectPtr<UInputMappingContext> InputMappingContent = nullptr;
 
 	UPROPERTY(EditAnywhere, Category= "Player Input|Character Movement")
@@ -58,6 +62,7 @@ protected:
 	void HandleLook(const FInputActionValue& InputActionValue);
 	void HandleSprint();
 	void HandleJump();
+	void HandleInteract();
 
 
 	bool HoldingDown = false;
