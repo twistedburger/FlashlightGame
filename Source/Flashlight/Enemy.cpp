@@ -8,6 +8,7 @@
 #include "Components/BoxComponent.h"
 #include "Components/SphereComponent.h"
 #include "Aaron.h"
+#include "Components/WidgetComponent.h"
 
 // Sets default values
 AEnemy::AEnemy()
@@ -33,7 +34,17 @@ void AEnemy::BeginPlay()
 
 	PrimaryAIController = Cast<APrimaryAIController>(GetController());
 	PrimaryAIController->GetPathFollowingComponent()->OnRequestFinished.AddUObject(this, &AEnemy::OnAIMoveCompleted);
+
+	Speech = GetComponentByClass<UWidgetComponent>();
+	ToggleAlert();
 	
+}
+
+void AEnemy::ToggleAlert()
+{
+	if (Speech)
+		Speech->ToggleVisibility(true);
+
 }
 
 void AEnemy::OnAIMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result)
@@ -45,24 +56,35 @@ void AEnemy::MoveToPlayer()
 {
 	FVector AaronLocation = Aaron->GetActorLocation();
 	AaronLocation.X = 0;
+	
 	PrimaryAIController->MoveToLocation(AaronLocation, StoppingDistance, true);
 }
 
 void AEnemy::SeekPlayer()
 {
+
 	MoveToPlayer();
 	GetWorld()->GetTimerManager().SetTimer(SeekPlayerTimerHandle, this, &AEnemy::SeekPlayer, 0.25f, true);
 }
 
 void AEnemy::StopSeekingPlayer()
 {
+	if (GetWorld()->GetTimerManager().GetTimerRemaining(AlertTimerHandle) > 0)
+	{
+	ToggleAlert();
+	GetWorld()->GetTimerManager().ClearTimer(AlertTimerHandle);
+	}
 	GetWorld()->GetTimerManager().ClearTimer(SeekPlayerTimerHandle);
+	
 }
 
 void AEnemy::OnPlayerDetectedOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (AAaron* AaronRef = Cast<AAaron>(OtherActor)) 
 	{
+
+		Speech->ToggleVisibility(true);
+		GetWorld()->GetTimerManager().SetTimer(AlertTimerHandle, this, &AEnemy::ToggleAlert, 0.75f, false);
 		Aaron = AaronRef;
 		PlayerDetected = true;
 		if(Aaron->GetActorLocation().X < 5)
@@ -82,9 +104,10 @@ void AEnemy::OnPlayerDetectedOverlapEnd(UPrimitiveComponent* OverlappedComp, AAc
 
 void AEnemy::OnPlayerAttackOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-
+	if (AAaron* AaronRef = Cast<AAaron>(OtherActor))
+	{
 		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, "DEAD");
-	
+	}
 }
 
 void AEnemy::OnPlayerAttackOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)

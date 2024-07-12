@@ -11,7 +11,7 @@ class APrimaryAIController;
 class UBoxComponent;
 class USphereComponent;
 class AAaron;
-class UStaticMeshComponent;
+class UWidgetComponent;
 
 UCLASS()
 class FLASHLIGHT_API AEnemy : public ACharacter
@@ -32,12 +32,14 @@ public:
 	UBoxComponent* Vision;
 	USphereComponent* Attack;
 
-	UStaticMeshComponent* Speech;
+	UPROPERTY(EditAnywhere, Category = "SpeechBubble")
+	UWidgetComponent* Speech;
 
 	UPROPERTY(EditAnywhere)
 	float StoppingDistance = 100.0f;
 
 	FTimerHandle SeekPlayerTimerHandle;
+	FTimerHandle AlertTimerHandle;
 
 	bool PlayerDetected;
 
@@ -73,6 +75,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	void ToggleAlert();
 
 
 public:	
