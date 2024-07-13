@@ -142,9 +142,11 @@ void AAaron::Tick(float DeltaTime)
 	if(FollowCamera)
 		AaronController->MoveCamera(DeltaTime, LerpTime);
 
-	//FString hidden = IsHidden ? "True" : "False";
 
-	//GEngine->AddOnScreenDebugMessage(-1, 0.49f, FColor::Red, hidden);
+
+	//FString hidden = IsHidden ? "True" : "False";
+	float velocity = GetVelocity().Y;
+	GEngine->AddOnScreenDebugMessage(-1, 0.49f, FColor::Red, FString::Printf(TEXT("%f"), velocity));
 }
 
 // Called to bind functionality to input
