@@ -40,3 +40,8 @@ FString AStreetlight::ReactToTrigger()
 	return StreetlightType;
 }
 
+bool AStreetlight::IsLightSource()
+{
+	return true;
+}
+

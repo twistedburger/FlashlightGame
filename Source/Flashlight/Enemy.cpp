@@ -9,6 +9,9 @@
 #include "Components/SphereComponent.h"
 #include "Aaron.h"
 #include "Components/WidgetComponent.h"
+#include "PrimaryInterface.h"
+#include "GameFramework/CharacterMovementComponent.h"
+
 
 // Sets default values
 AEnemy::AEnemy()
@@ -35,8 +38,23 @@ void AEnemy::BeginPlay()
 	PrimaryAIController = Cast<APrimaryAIController>(GetController());
 	PrimaryAIController->GetPathFollowingComponent()->OnRequestFinished.AddUObject(this, &AEnemy::OnAIMoveCompleted);
 
-	Speech = GetComponentByClass<UWidgetComponent>();
+	TArray<UActorComponent*> SpeechOptions =  K2_GetComponentsByClass(UWidgetComponent::StaticClass());
+
+	for (int32 i = 0; i < SpeechOptions.Num(); i++)
+	{
+		UWidgetComponent* tempWidget = Cast<UWidgetComponent>(SpeechOptions[i]);
+		FString name = tempWidget->GetName();
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, name);
+		if (tempWidget->GetName() == "SpeechBubble")
+			Speech = tempWidget;
+		else if(tempWidget->GetName() == "LostVision")
+			LostSight = tempWidget;
+	}
 	ToggleAlert();
+	ToggleHmm();
+	Pondering = false;
+
+	GetCharacterMovement()->MaxWalkSpeed = 300.f;
 	
 }
 
@@ -44,12 +62,24 @@ void AEnemy::ToggleAlert()
 {
 	if (Speech)
 		Speech->ToggleVisibility(true);
+}
 
+void AEnemy::ToggleHmm()
+{
+	if (LostSight)
+		LostSight->ToggleVisibility(true);
+}
+
+void AEnemy::RestartPatrol()
+{
+	Pondering = false;
+	PrimaryAIController->Patrol();
 }
 
 void AEnemy::OnAIMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result)
 {
-	PrimaryAIController->Patrol();
+	if(!Pondering)
+		PrimaryAIController->Patrol();
 }
 
 void AEnemy::MoveToPlayer()
@@ -69,12 +99,23 @@ void AEnemy::SeekPlayer()
 
 void AEnemy::StopSeekingPlayer()
 {
+	if (PlayerDetected)
+	{
+		Pondering = true;
+		PrimaryAIController->StopMovement();
+		GetWorld()->GetTimerManager().SetTimer(PonderTimerHandle, this, &AEnemy::RestartPatrol, 2.0f, false, 2.0f);
+		PlayerDetected = false;
+	}
+
 	if (GetWorld()->GetTimerManager().GetTimerRemaining(AlertTimerHandle) > 0)
 	{
 	ToggleAlert();
 	GetWorld()->GetTimerManager().ClearTimer(AlertTimerHandle);
 	}
 	GetWorld()->GetTimerManager().ClearTimer(SeekPlayerTimerHandle);
+	if (!LostSight->GetVisibleFlag())
+		ToggleHmm();
+	
 	
 }
 
@@ -96,9 +137,10 @@ void AEnemy::OnPlayerDetectedOverlapEnd(UPrimitiveComponent* OverlappedComp, AAc
 {
 	if (AAaron* AaronRef = Cast<AAaron>(OtherActor))
 	{
-		PlayerDetected = false;
+		GetWorld()->GetTimerManager().SetTimer(HmmTimerHandle, this, &AEnemy::ToggleHmm, 0.75f, false);
 		StopSeekingPlayer();
-		PrimaryAIController->Patrol();
+		//if(!GetWorld()->GetTimerManager().GetTimerElapsed(PonderTimerHandle))
+		//	GetWorld()->GetTimerManager().SetTimer(PonderTimerHandle, this, &AEnemy::RestartPatrol, 2.0f, false, 2.0f);
 	}
 }
 
@@ -107,6 +149,16 @@ void AEnemy::OnPlayerAttackOverlapBegin(UPrimitiveComponent* OverlappedComp, AAc
 	if (AAaron* AaronRef = Cast<AAaron>(OtherActor))
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, "DEAD");
+	}
+	else if (IPrimaryInterface* OverlappedObject = Cast<IPrimaryInterface>(OtherActor))
+	{
+		if (OverlappedObject->IsLightSource())
+		{
+			GetWorld()->GetTimerManager().SetTimer(HmmTimerHandle, this, &AEnemy::ToggleHmm, 0.75f, false);
+			StopSeekingPlayer();
+			//if (!GetWorld()->GetTimerManager().GetTimerElapsed(PonderTimerHandle))
+			//	GetWorld()->GetTimerManager().SetTimer(PonderTimerHandle, this, &AEnemy::RestartPatrol, 2.f, false, 2.0f);
+		}
 	}
 }
 

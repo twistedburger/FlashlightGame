@@ -34,12 +34,16 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "SpeechBubble")
 	UWidgetComponent* Speech;
+	UPROPERTY(EditAnywhere, Category = "SpeechBubble")
+	UWidgetComponent* LostSight;
 
 	UPROPERTY(EditAnywhere)
 	float StoppingDistance = 100.0f;
 
 	FTimerHandle SeekPlayerTimerHandle;
 	FTimerHandle AlertTimerHandle;
+	FTimerHandle HmmTimerHandle;
+	FTimerHandle PonderTimerHandle;
 
 	bool PlayerDetected;
 
@@ -76,7 +80,9 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	void ToggleAlert();
-
+	void ToggleHmm();
+	void RestartPatrol();
+	bool Pondering;
 
 public:	
 	// Called every frame

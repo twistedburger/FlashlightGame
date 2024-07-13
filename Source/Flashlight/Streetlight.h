@@ -25,6 +25,7 @@ public:
 	FString GetType();
 
 	virtual FString ReactToTrigger() override;
+	virtual bool IsLightSource() override;
 
 protected:
 	// Called when the game starts or when spawned

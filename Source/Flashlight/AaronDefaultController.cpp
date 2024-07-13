@@ -79,7 +79,7 @@ FVector AAaronDefaultController::SetCameraPosition(float Height = 0.f)
 
 FVector AAaronDefaultController::SetLevelPosition()
 {
-	FVector Location = CameraStart;
+	FVector Location = SetCameraPosition();
 	Location.Z -= LevelOffset;
 
 	return Location;
@@ -201,8 +201,8 @@ void AAaronDefaultController::MoveCamera(float DeltaTime, float LerpTime)
 			CameraReference->Level->SetActorLocation(LevelMovement);
 			float LevelRotationDistance = (LastCameraPosition.Y - Movement.Y)/100;
 			CameraReference->Level->RotateLevel(4000.f, LevelRotationDistance );
-			}
 			//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("rotation distance: %f"), LevelRotationDistance));
+			}
 			TimeElapsed += DeltaTime;
 		}
 		else

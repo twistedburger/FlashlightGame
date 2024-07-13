@@ -24,4 +24,5 @@ class FLASHLIGHT_API IPrimaryInterface
 public:
 	virtual FString ReactToTrigger();
 	virtual bool CheckIfHideaway();
+	virtual bool IsLightSource();
 };

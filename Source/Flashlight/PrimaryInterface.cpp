@@ -15,3 +15,8 @@ bool IPrimaryInterface::CheckIfHideaway()
 	return false;
 }
 
+bool IPrimaryInterface::IsLightSource()
+{
+	return false;
+}
+

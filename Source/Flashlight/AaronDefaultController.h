@@ -55,7 +55,7 @@ public:
 	float CameraHeight = 0.f;
 
 	UPROPERTY(EditAnywhere, Category = "Camera")
-	float LevelOffset = 150.f;
+	float LevelOffset = 200.f;
 
 protected:
 	void HandleMove(const FInputActionValue& InputActionValue);
