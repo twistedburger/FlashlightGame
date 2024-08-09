@@ -145,8 +145,7 @@ void AAaron::Tick(float DeltaTime)
 
 
 	//FString hidden = IsHidden ? "True" : "False";
-	float velocity = GetVelocity().Y;
-	GEngine->AddOnScreenDebugMessage(-1, 0.49f, FColor::Red, FString::Printf(TEXT("%f"), velocity));
+	
 }
 
 // Called to bind functionality to input
