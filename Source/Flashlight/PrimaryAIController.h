@@ -23,6 +23,11 @@ public:
 	FVector StartingLocation;
 	FVector EndingLocation;
 	
+	UPROPERTY(EditAnywhere, Category = "Path")
+	float PatrolDistance = 600.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Path")
+	float PatrolTolerance = 50.0f;
 
 	UFUNCTION()
 	void Patrol();
@@ -31,6 +36,4 @@ protected:
 
 private:
 	UNavigationSystemV1* NavArea;
-
-	FVector RandomLocation;
 };

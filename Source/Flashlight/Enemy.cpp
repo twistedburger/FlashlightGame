@@ -18,7 +18,6 @@ AEnemy::AEnemy()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
 }
 
 
@@ -31,9 +30,8 @@ void AEnemy::BeginPlay()
 	Vision->OnComponentBeginOverlap.AddDynamic(this, &AEnemy::OnPlayerDetectedOverlapBegin);
 	Vision->OnComponentEndOverlap.AddDynamic(this, &AEnemy::OnPlayerDetectedOverlapEnd);
 
-	Attack = GetComponentByClass<USphereComponent>();
-	Attack->OnComponentBeginOverlap.AddDynamic(this, &AEnemy::OnPlayerAttackOverlapBegin);
-	Attack->OnComponentEndOverlap.AddDynamic(this, &AEnemy::OnPlayerAttackOverlapEnd);
+	Apprehend = GetComponentByClass<USphereComponent>();
+	Apprehend->OnComponentBeginOverlap.AddDynamic(this, &AEnemy::OnPlayerCaught);
 
 	PrimaryAIController = Cast<APrimaryAIController>(GetController());
 	PrimaryAIController->GetPathFollowingComponent()->OnRequestFinished.AddUObject(this, &AEnemy::OnAIMoveCompleted);
@@ -44,17 +42,18 @@ void AEnemy::BeginPlay()
 	{
 		UWidgetComponent* tempWidget = Cast<UWidgetComponent>(SpeechOptions[i]);
 		FString name = tempWidget->GetName();
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, name);
+
 		if (tempWidget->GetName() == "SpeechBubble")
 			Speech = tempWidget;
 		else if(tempWidget->GetName() == "LostVision")
 			LostSight = tempWidget;
 	}
+
 	ToggleAlert();
 	ToggleHmm();
 	Pondering = false;
 
-	GetCharacterMovement()->MaxWalkSpeed = 300.f;
+	GetCharacterMovement()->MaxWalkSpeed = EnemyWalkingSpeed;
 	
 }
 
@@ -92,9 +91,8 @@ void AEnemy::MoveToPlayer()
 
 void AEnemy::SeekPlayer()
 {
-
 	MoveToPlayer();
-	GetWorld()->GetTimerManager().SetTimer(SeekPlayerTimerHandle, this, &AEnemy::SeekPlayer, 0.25f, true);
+	GetWorld()->GetTimerManager().SetTimer(SeekPlayerTimerHandle, this, &AEnemy::SeekPlayer, ChaseTimer, true);
 }
 
 void AEnemy::StopSeekingPlayer()
@@ -103,32 +101,34 @@ void AEnemy::StopSeekingPlayer()
 	{
 		Pondering = true;
 		PrimaryAIController->StopMovement();
-		GetWorld()->GetTimerManager().SetTimer(PonderTimerHandle, this, &AEnemy::RestartPatrol, 2.0f, false, 2.0f);
+		GetWorld()->GetTimerManager().SetTimer(PonderTimerHandle, this, &AEnemy::RestartPatrol, PonderTimer, false, PonderTimer);
 		PlayerDetected = false;
 	}
 
 	if (GetWorld()->GetTimerManager().GetTimerRemaining(AlertTimerHandle) > 0)
 	{
-	ToggleAlert();
-	GetWorld()->GetTimerManager().ClearTimer(AlertTimerHandle);
+		ToggleAlert();
+		GetWorld()->GetTimerManager().ClearTimer(AlertTimerHandle);
 	}
+
 	GetWorld()->GetTimerManager().ClearTimer(SeekPlayerTimerHandle);
+
 	if (!LostSight->GetVisibleFlag())
 		ToggleHmm();
-	
-	
 }
 
 void AEnemy::OnPlayerDetectedOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (AAaron* AaronRef = Cast<AAaron>(OtherActor)) 
 	{
-
 		Speech->ToggleVisibility(true);
-		GetWorld()->GetTimerManager().SetTimer(AlertTimerHandle, this, &AEnemy::ToggleAlert, 0.75f, false);
+		GetWorld()->GetTimerManager().SetTimer(AlertTimerHandle, this, &AEnemy::ToggleAlert, AlertDisplayTimer, false);
+
 		Aaron = AaronRef;
 		PlayerDetected = true;
-		if(Aaron->GetActorLocation().X < 5)
+
+		
+		if(Aaron->GetActorLocation().X < HidingTolerance)
 			SeekPlayer();
 	}
 }
@@ -137,35 +137,27 @@ void AEnemy::OnPlayerDetectedOverlapEnd(UPrimitiveComponent* OverlappedComp, AAc
 {
 	if (AAaron* AaronRef = Cast<AAaron>(OtherActor))
 	{
-		GetWorld()->GetTimerManager().SetTimer(HmmTimerHandle, this, &AEnemy::ToggleHmm, 0.75f, false);
+		GetWorld()->GetTimerManager().SetTimer(HmmTimerHandle, this, &AEnemy::ToggleHmm, AlertDisplayTimer, false);
 		StopSeekingPlayer();
-		//if(!GetWorld()->GetTimerManager().GetTimerElapsed(PonderTimerHandle))
-		//	GetWorld()->GetTimerManager().SetTimer(PonderTimerHandle, this, &AEnemy::RestartPatrol, 2.0f, false, 2.0f);
 	}
 }
 
-void AEnemy::OnPlayerAttackOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AEnemy::OnPlayerCaught(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (AAaron* AaronRef = Cast<AAaron>(OtherActor))
 	{
+		//Implement player getting caught
 		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, "DEAD");
 	}
 	else if (IPrimaryInterface* OverlappedObject = Cast<IPrimaryInterface>(OtherActor))
 	{
 		if (OverlappedObject->IsLightSource())
 		{
-			GetWorld()->GetTimerManager().SetTimer(HmmTimerHandle, this, &AEnemy::ToggleHmm, 0.75f, false);
+			GetWorld()->GetTimerManager().SetTimer(HmmTimerHandle, this, &AEnemy::ToggleHmm, AlertDisplayTimer, false);
 			StopSeekingPlayer();
-			//if (!GetWorld()->GetTimerManager().GetTimerElapsed(PonderTimerHandle))
-			//	GetWorld()->GetTimerManager().SetTimer(PonderTimerHandle, this, &AEnemy::RestartPatrol, 2.f, false, 2.0f);
 		}
 	}
 }
-
-void AEnemy::OnPlayerAttackOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-}
-
 
 // Called every frame
 void AEnemy::Tick(float DeltaTime)

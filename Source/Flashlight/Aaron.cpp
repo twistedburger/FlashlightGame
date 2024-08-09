@@ -20,18 +20,7 @@ AAaron::AAaron()
 
 	Radius = 900.f;
 
-	/*CameraArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
-	CameraArm->SetupAttachment(GetMesh());
-	CameraArm->TargetArmLength = Radius;
-	CameraArm->bUsePawnControlRotation = false;
-
-	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	FollowCamera->SetupAttachment(CameraArm, USpringArmComponent::SocketName);
-	FollowCamera->bUsePawnControlRotation = false;*/
-
 	ZLocation = GetActorLocation().Z;
-
-	
 
 	bUseControllerRotationYaw = false;
 
@@ -54,6 +43,7 @@ void AAaron::BeginPlay()
 	Super::BeginPlay();
 
 	Flashlight = GetComponentByClass<USpotLightComponent>();
+
 	PrimaryCollider = GetComponentByClass<UCapsuleComponent>();
 	PrimaryCollider->SetGenerateOverlapEvents(true);
 	PrimaryCollider->OnComponentBeginOverlap.AddDynamic(this, &AAaron::Hit);
@@ -79,13 +69,6 @@ void AAaron::Hit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimi
 		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, "Hidden");
 
 	}
-	//if(AStreetlight* Streetlight = Cast<AStreetlight>(OtherActor))
-	//{
-	//	FString Type = Streetlight->GetType();
-	//	
-	//	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, Type);
-	//	IsHidden = true;
-	//}
 
 }
 

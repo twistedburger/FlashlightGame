@@ -22,8 +22,6 @@ public:
 	FString StreetlightType;
 	UBoxComponent* Collider;
 
-	FString GetType();
-
 	virtual FString ReactToTrigger() override;
 	virtual bool IsLightSource() override;
 

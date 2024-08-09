@@ -30,7 +30,7 @@ public:
 	void OnAIMoveCompleted(struct FAIRequestID RequestID, const struct FPathFollowingResult& Result);
 
 	UBoxComponent* Vision;
-	USphereComponent* Attack;
+	USphereComponent* Apprehend;
 
 	UPROPERTY(EditAnywhere, Category = "SpeechBubble")
 	UWidgetComponent* Speech;
@@ -39,6 +39,19 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	float StoppingDistance = 100.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float EnemyWalkingSpeed = 300.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Chasing")
+	float ChaseTimer = 0.25f;
+
+	UPROPERTY(EditAnywhere, Category = "Chasing")
+	float PonderTimer = 2.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Chasing")
+	float AlertDisplayTimer = 0.75f;
+
 
 	FTimerHandle SeekPlayerTimerHandle;
 	FTimerHandle AlertTimerHandle;
@@ -67,14 +80,10 @@ public:
 		int32 OtherBodyIndex);
 
 	UFUNCTION()
-	void OnPlayerAttackOverlapBegin(class UPrimitiveComponent* OverlappedComp,
+	void OnPlayerCaught(class UPrimitiveComponent* OverlappedComp,
 		class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	UFUNCTION()
-	void OnPlayerAttackOverlapEnd(class UPrimitiveComponent* OverlappedComp,
-		class AActor* OtherActor, class UPrimitiveComponent* OtherComp,
-		int32 OtherBodyIndex);
 
 protected:
 	// Called when the game starts or when spawned
@@ -83,6 +92,7 @@ protected:
 	void ToggleHmm();
 	void RestartPatrol();
 	bool Pondering;
+	float HidingTolerance = 5.0f;
 
 public:	
 	// Called every frame

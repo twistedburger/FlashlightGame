@@ -29,14 +29,8 @@ void AStreetlight::Tick(float DeltaTime)
 
 }
 
-FString AStreetlight::GetType()
-{
-	return StreetlightType;
-}
-
 FString AStreetlight::ReactToTrigger()
 {
-
 	return StreetlightType;
 }
 

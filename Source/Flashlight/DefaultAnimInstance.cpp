@@ -25,6 +25,5 @@ void UDefaultAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 void UDefaultAnimInstance::UpdateAnimProperties()
 {
-	
 	WalkSpeed = abs(Character->GetVelocity().Y);
 }
