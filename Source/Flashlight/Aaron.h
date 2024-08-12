@@ -12,7 +12,7 @@ class UCapsuleComponent;
 class UBoxComponent;
 class AJumpingPlatform;
 class AAaronDefaultController;
-
+class APrimaryCamera;
 
 UCLASS()
 class FLASHLIGHT_API AAaron : public ACharacter
@@ -23,24 +23,24 @@ public:
 	// Sets default values for this character's properties
 	AAaron();
 
-	UPROPERTY(VisibleAnywhere, Category = "Camera")
-	class USpringArmComponent* CameraArm;
-
 	UPROPERTY(EditAnywhere, Category = "Camera")
-	class APrimaryCamera* FollowCamera = nullptr;
-
-	UPROPERTY(EditAnywhere, Category = "Path")
-	float Radius;
+	APrimaryCamera* FollowCamera = nullptr;
 
 	UPROPERTY(EditAnywhere, Category = "Jump")
-
 	AJumpingPlatform* CurrentPlatform = nullptr;
-	void DownJump();
 
 	USpotLightComponent* GetFlashlight();
 
-	float ZLocation;
 
+	UPROPERTY(VisibleAnywhere)
+	bool IsHidden;
+
+	AAaronDefaultController* AaronController;
+
+	UPROPERTY(EditAnywhere, Category="LERP")
+	float LerpTime =0.72f;
+
+protected:
 	UFUNCTION()
 	void Hit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
@@ -53,24 +53,19 @@ public:
 	UFUNCTION()
 	void Leave(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	UPROPERTY(VisibleAnywhere)
-	bool IsHidden;
+	UFUNCTION()
+	void DownJump();
 
-	AAaronDefaultController* AaronController;
-
-	UPROPERTY(EditAnywhere, Category="LERP")
-	float LerpTime =0.72f;
-
-protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
 	UPROPERTY(EditAnywhere, Category = "Flashlight")
 	USpotLightComponent* Flashlight = nullptr;
+	
 	UCapsuleComponent* PrimaryCollider = nullptr;
 	UBoxComponent* PlatformCollider = nullptr;
-
-
+	
+	float ZLocation;
 
 public:	
 	// Called every frame

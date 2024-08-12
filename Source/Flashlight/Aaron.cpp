@@ -1,14 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#define _USE_MATH_DEFINES
+
 #include "Aaron.h"
-#include "Camera/CameraComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SpotLightComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "math.h"
 #include "Streetlight.h"
 #include "JumpingPlatform.h"
 #include "AaronDefaultController.h"
@@ -17,8 +14,6 @@
 // Sets default values
 AAaron::AAaron()
 {
-
-	Radius = 900.f;
 
 	ZLocation = GetActorLocation().Z;
 
@@ -35,6 +30,7 @@ AAaron::AAaron()
 	GetCharacterMovement()->JumpZVelocity = 400.f;
 
 }
+
 
 // Called when the game starts or when spawned
 void AAaron::BeginPlay()
@@ -57,6 +53,7 @@ void AAaron::BeginPlay()
 	AaronController = Cast<AAaronDefaultController>(GetController());
 }
 
+
 void AAaron::Hit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {	
 	if (IPrimaryInterface* OverlappedObject = Cast<IPrimaryInterface>(OtherActor))
@@ -65,12 +62,9 @@ void AAaron::Hit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimi
 	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, Type);
 	if (OverlappedObject->CheckIfHideaway())
 		IsHidden = true;
-	if(IsHidden)
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, "Hidden");
-
 	}
-
 }
+
 
 void AAaron::OnPlatform(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -81,6 +75,7 @@ void AAaron::OnPlatform(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	}
 }
 
+
 void AAaron::NotOnPlatform(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	if (AJumpingPlatform* Platform = Cast<AJumpingPlatform>(OtherActor))
@@ -89,6 +84,7 @@ void AAaron::NotOnPlatform(UPrimitiveComponent* OverlappedComp, AActor* OtherAct
 		CurrentPlatform = nullptr;
 	}
 }
+
 
 void AAaron::Leave(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
@@ -123,18 +119,12 @@ void AAaron::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	
 	if(FollowCamera)
-		AaronController->MoveCamera(DeltaTime, LerpTime);
-
-
-
-	//FString hidden = IsHidden ? "True" : "False";
-	
+		AaronController->MoveCamera(DeltaTime, LerpTime);	
 }
 
 // Called to bind functionality to input
 void AAaron::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
 

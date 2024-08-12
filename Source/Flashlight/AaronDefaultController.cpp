@@ -152,17 +152,19 @@ void AAaronDefaultController::HandleLook(const FInputActionValue& InputActionVal
 
 void AAaronDefaultController::HandleJump()
 {
-	if (PlayerCharacter)
-	{
-		//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Jumped")));
-		if (HoldingDown)
-		{
-			PlayerCharacter->DownJump();
-			HoldingDown = false;
-		}
-		else
-			PlayerCharacter->Jump();
-	}
+	// **** Uncomment for jumping - Requires animation update **** 
+	
+	//if (PlayerCharacter)
+	//{
+	//	//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Jumped")));
+	//	if (HoldingDown)
+	//	{
+	//		PlayerCharacter->DownJump();
+	//		HoldingDown = false;
+	//	}
+	//	else
+	//		PlayerCharacter->Jump();
+	//}
 }
 
 void AAaronDefaultController::HandleInteract()
