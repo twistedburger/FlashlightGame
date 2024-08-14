@@ -17,13 +17,13 @@ void AAaronDefaultController::OnPossess(APawn* aPawn)
 	Super::OnPossess(aPawn);
 
 	PlayerCharacter = Cast<AAaron>(aPawn);
-	checkf(PlayerCharacter, TEXT("Only AAaron derived classes should only possess AAaron pawns"));
+	checkf(PlayerCharacter, TEXT("Only AAaron derived classes should possess AAaron pawns"));
 
 	CameraReference = PlayerCharacter->FollowCamera;
 
-	CameraStart = SetCameraPosition(CameraHeight);
+	CameraStart = GetCameraPosition(CameraHeight);
 	
-	LevelStart = SetLevelPosition();
+	LevelStart = GetLevelPosition();
 
 	LastCameraPosition = CameraStart;
 	CameraReference->SetActorLocation(CameraStart);
@@ -54,9 +54,7 @@ void AAaronDefaultController::OnPossess(APawn* aPawn)
 	if(ActionInteract)
 		EnhancedInputComponent->BindAction(ActionInteract, ETriggerEvent::Triggered, this, &AAaronDefaultController::HandleInteract);
 
-
 	TimeElapsed = 0.f;
-
 }
 
 void AAaronDefaultController::OnUnPossess()
@@ -65,7 +63,7 @@ void AAaronDefaultController::OnUnPossess()
 	Super::OnUnPossess();
 }
 
-FVector AAaronDefaultController::SetCameraPosition(float Height = 0.f)
+FVector AAaronDefaultController::GetCameraPosition(float Height = 0.f)
 {
 	FVector Location = PlayerCharacter->GetActorLocation();
 	Location.X -= CameraDistance;
@@ -77,9 +75,9 @@ FVector AAaronDefaultController::SetCameraPosition(float Height = 0.f)
 	return Location;
 }
 
-FVector AAaronDefaultController::SetLevelPosition()
+FVector AAaronDefaultController::GetLevelPosition()
 {
-	FVector Location = SetCameraPosition();
+	FVector Location = GetCameraPosition();
 	Location.Z -= LevelOffset;
 
 	return Location;
@@ -189,8 +187,8 @@ void AAaronDefaultController::MoveCamera(float DeltaTime, float LerpTime)
 	{
 		if (TimeElapsed == 0)
 		{
-			CameraDestination = SetCameraPosition();
-			LevelDestination = SetLevelPosition();
+			CameraDestination = GetCameraPosition();
+			LevelDestination = GetLevelPosition();
 
 		}
 		if (TimeElapsed < LerpTime)

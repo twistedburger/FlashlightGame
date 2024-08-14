@@ -79,8 +79,8 @@ protected:
 
 	float TimeElapsed;
 
-	FVector SetCameraPosition(float Height);
-	FVector SetLevelPosition();
+	FVector GetCameraPosition(float Height);
+	FVector GetLevelPosition();
 
 
 private:
