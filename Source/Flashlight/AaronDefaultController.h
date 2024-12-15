@@ -12,6 +12,7 @@ class UInputMappingContext;
 class UEnhancedInputComponent;
 class AAaron;
 class APrimaryCamera;
+class UUserWidget;
 
 
 UCLASS(Abstract)
@@ -34,7 +35,6 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Input|Character Movement")
 	UInputAction* ActionInteract = nullptr;
-
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="Player Input|Character Movement")
 	TObjectPtr<UInputMappingContext> InputMappingContent = nullptr;

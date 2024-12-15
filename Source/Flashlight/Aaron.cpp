@@ -62,6 +62,8 @@ void AAaron::Hit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimi
 	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, Type);
 	if (OverlappedObject->CheckIfHideaway())
 		IsHidden = true;
+		dialog->NextDialog();
+		dialog->ShowDialog();
 	}
 }
 

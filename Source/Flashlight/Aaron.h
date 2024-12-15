@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include <InputActionValue.h>
+#include "Dialog.h"
 #include "Aaron.generated.h"
 
 class USpotLightComponent;
@@ -14,10 +15,14 @@ class AJumpingPlatform;
 class AAaronDefaultController;
 class APrimaryCamera;
 
+
 UCLASS()
 class FLASHLIGHT_API AAaron : public ACharacter
 {
 	GENERATED_BODY()
+
+private:
+	
 
 public:
 	// Sets default values for this character's properties
@@ -39,6 +44,10 @@ public:
 
 	UPROPERTY(EditAnywhere, Category="LERP")
 	float LerpTime =0.72f;
+
+	UPROPERTY(EditAnywhere, Category = "Dialog")
+	ADialog* dialog = nullptr;
+
 
 protected:
 	UFUNCTION()
