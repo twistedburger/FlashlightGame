@@ -59,11 +59,12 @@ void AAaron::Hit(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimi
 	if (IPrimaryInterface* OverlappedObject = Cast<IPrimaryInterface>(OtherActor))
 	{
 	FString Type = OverlappedObject->ReactToTrigger();
+	OverlappedObject->PerformAction(this);
 	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, Type);
 	if (OverlappedObject->CheckIfHideaway())
 		IsHidden = true;
-		dialog->NextDialog();
-		dialog->ShowDialog();
+		//dialog->NextDialog();
+		//dialog->ShowDialog();
 	}
 }
 
@@ -128,5 +129,10 @@ void AAaron::Tick(float DeltaTime)
 void AAaron::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
+
+ADialog* AAaron::getDialog()
+{
+	return dialog;
 }
 

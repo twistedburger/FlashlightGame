@@ -20,3 +20,8 @@ bool IPrimaryInterface::IsLightSource()
 	return false;
 }
 
+void IPrimaryInterface::PerformAction(AActor* character)
+{
+}
+
+

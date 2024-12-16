@@ -6,6 +6,11 @@
 #include "GameFramework/Actor.h"
 #include "Dialog.generated.h"
 
+UENUM()
+enum Conversations {
+	Beach,
+	Spaceship
+};
 
 UCLASS()
 class FLASHLIGHT_API ADialog : public AActor

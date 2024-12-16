@@ -21,7 +21,7 @@ void ADialog::BeginPlay()
 	Dialogs.Add(TEXT("Look a beach!"));
 	Dialogs.Add(TEXT("Great spot for a fire"));
 	Dialogs.Add(TEXT("Vroom Vroom"));
-	
+	ShowDialog();
 	//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, Dialogs[0]);
 	
 	
@@ -31,10 +31,6 @@ void ADialog::BeginPlay()
 void ADialog::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (DialogCounter < 1) {
-		ShowDialog();
-		NextDialog();
-	}
 }
 
 void ADialog::ShowDialog()
@@ -56,6 +52,7 @@ void ADialog::HideDialog()
 void ADialog::NextDialog()
 {
 	DialogCounter++;
+	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Current counter: %d"), DialogCounter));
 }
 
 
