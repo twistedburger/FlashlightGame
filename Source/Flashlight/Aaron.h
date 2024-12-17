@@ -84,5 +84,8 @@ public:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 	ADialog* getDialog();
-
+	bool InDialog();
+	void SetDialog(bool IsSpeaking);
+	void StartDialog(TEnumAsByte<Conversations> conversation);
+	bool Speaking = false;
 };

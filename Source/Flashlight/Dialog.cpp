@@ -18,10 +18,10 @@ ADialog::ADialog()
 void ADialog::BeginPlay()
 {
 	Super::BeginPlay();
-	Dialogs.Add(TEXT("Look a beach!"));
-	Dialogs.Add(TEXT("Great spot for a fire"));
-	Dialogs.Add(TEXT("Vroom Vroom"));
-	ShowDialog();
+	BeachDialogs.Add(TEXT("Look a beach!"));
+	BeachDialogs.Add(TEXT("Great spot for a fire"));
+	BeachDialogs.Add(TEXT("Vroom Vroom"));
+	SpaceShipDialogs.Add(TEXT("I'm a little spaceship!"));
 	//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, Dialogs[0]);
 	
 	
@@ -33,12 +33,29 @@ void ADialog::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void ADialog::StartDialog(Conversations conversation)
+{
+	switch (conversation) {
+	case Conversations::Beach:
+		Dialogs = BeachDialogs;
+		BeachDialogs.Empty();
+		break;
+	case Conversations::Spaceship:
+		Dialogs = SpaceShipDialogs;
+		SpaceShipDialogs.Empty();
+		break;
+	default:
+		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("ERROR: NO DIALOG SCENE."));
+	}
+	ShowDialog();
+	NextDialog();	
+}
+
 void ADialog::ShowDialog()
 {
 	if (DialogWidget) {
 		DialogWidget->AddToViewport();
-		if (DialogCounter < Dialogs.Num())
-			DialogWidget->DisplayText(FText::FromString(Dialogs[DialogCounter]));
+		
 	}
 }
 
@@ -49,10 +66,19 @@ void ADialog::HideDialog()
 	}
 }
 
-void ADialog::NextDialog()
+bool ADialog::NextDialog()
 {
-	DialogCounter++;
-	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString::Printf(TEXT("Current counter: %d"), DialogCounter));
+	if (DialogCounter < Dialogs.Num()) {
+		DialogWidget->DisplayText(FText::FromString(Dialogs[DialogCounter]));
+		DialogCounter++;
+		return true;
+	}
+	else {
+		DialogCounter = 0;
+		Dialogs.Reset();
+		HideDialog();
+		return false;
+	}
 }
 
 

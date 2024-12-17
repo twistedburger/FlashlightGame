@@ -23,4 +23,5 @@ public:
 	TEnumAsByte<Conversations> Trigger = Conversations::Beach;
 	void PerformAction(AActor* character = nullptr) override;
 	
+	
 };

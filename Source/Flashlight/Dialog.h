@@ -31,11 +31,14 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	void StartDialog(Conversations conversation);
 	void ShowDialog();
 	void HideDialog();
-	void NextDialog();
+	bool NextDialog();
 
 private:
 	TArray<FString> Dialogs;
+	TArray<FString> BeachDialogs;
+	TArray<FString> SpaceShipDialogs;
 	int DialogCounter = 0;
 };

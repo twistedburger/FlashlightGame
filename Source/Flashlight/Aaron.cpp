@@ -136,3 +136,21 @@ ADialog* AAaron::getDialog()
 	return dialog;
 }
 
+bool AAaron::InDialog()
+{
+	return Speaking;
+}
+
+void AAaron::SetDialog(bool IsSpeaking)
+{
+	Speaking = IsSpeaking;
+}
+
+void AAaron::StartDialog(TEnumAsByte<Conversations> conversation)
+{
+	if (!Speaking) {
+		Speaking = true;
+		dialog->StartDialog(conversation);
+	}
+}
+

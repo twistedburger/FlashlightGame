@@ -169,6 +169,9 @@ void AAaronDefaultController::HandleInteract()
 {
 	if (PlayerCharacter)
 	{
+		if (PlayerCharacter->InDialog()) {
+			PlayerCharacter->SetDialog(PlayerCharacter->getDialog()->NextDialog());
+		}
 		if (PlayerCharacter->IsHidden)
 		{
 			FVector PlayerPosition = PlayerCharacter->GetActorLocation();
