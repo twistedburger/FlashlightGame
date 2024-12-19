@@ -8,6 +8,7 @@
 #include "Dialog.h"
 #include "Aaron.generated.h"
 
+
 class USpotLightComponent;
 class UCapsuleComponent;
 class UBoxComponent;
@@ -22,8 +23,12 @@ class FLASHLIGHT_API AAaron : public ACharacter
 	GENERATED_BODY()
 
 private:
-	
-
+	float CrouchPosition = 0;
+	void AnimateHide(float DeltaTime);
+	AActor* NearbyHideaway = nullptr;
+	void MoveBehindBox(FVector box);
+	void MoveFromBox();
+	bool IsNearHideaway = false;
 public:
 	// Sets default values for this character's properties
 	AAaron();
@@ -37,8 +42,10 @@ public:
 	USpotLightComponent* GetFlashlight();
 
 
-	UPROPERTY(VisibleAnywhere)
-	bool IsHidden;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool IsHidden = false;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool IsCrouched = false;
 
 	AAaronDefaultController* AaronController;
 
@@ -48,6 +55,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Dialog")
 	ADialog* dialog = nullptr;
 
+	void Hide();
+	void SetHideaway(AActor* Hideaway);
+	void ToggleMovement(bool Movement);
 
 protected:
 	UFUNCTION()
@@ -64,6 +74,7 @@ protected:
 
 	UFUNCTION()
 	void DownJump();
+
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -83,8 +94,10 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
+	float GetCrouchPosition();
 	ADialog* getDialog();
 	bool InDialog();
+	bool NearHideaway();
 	void SetDialog(bool IsSpeaking);
 	void StartDialog(TEnumAsByte<Conversations> conversation);
 	bool Speaking = false;

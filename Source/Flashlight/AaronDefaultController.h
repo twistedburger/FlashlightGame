@@ -57,6 +57,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Camera")
 	float LevelOffset = 200.f;
 
+	void DisableMovement();
+	void EnableMovement();
+
 protected:
 	void HandleMove(const FInputActionValue& InputActionValue);
 	void HandleLook(const FInputActionValue& InputActionValue);
@@ -87,6 +90,7 @@ private:
 	UPROPERTY()
 	UEnhancedInputComponent* EnhancedInputComponent = nullptr;
 
+	bool MovementEnabled = true;
 
 	UPROPERTY()
 	AAaron* PlayerCharacter = nullptr;

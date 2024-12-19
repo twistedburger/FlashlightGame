@@ -6,7 +6,8 @@
 #include "Animation/AnimInstance.h"
 #include "DefaultAnimInstance.generated.h"
 
-class ACharacter;
+class AAaron;
+class UBlendSpace1D;
 
 /**
  * 
@@ -19,7 +20,7 @@ class FLASHLIGHT_API UDefaultAnimInstance : public UAnimInstance
 public:
 	UDefaultAnimInstance();
 
-	ACharacter* Character;
+	AAaron* Character;
 
 protected:
 	virtual void NativeInitializeAnimation() override;
@@ -28,6 +29,13 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
 	float WalkSpeed;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
+	float CrouchPosition;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
+	bool IsHidden = false;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
+	bool IsCrouched = false;
+
 
 private:
 

@@ -20,9 +20,7 @@ void AAaronDefaultController::OnPossess(APawn* aPawn)
 	checkf(PlayerCharacter, TEXT("Only AAaron derived classes should possess AAaron pawns"));
 
 	CameraReference = PlayerCharacter->FollowCamera;
-
 	CameraStart = GetCameraPosition(CameraHeight);
-	
 	LevelStart = GetLevelPosition();
 
 	LastCameraPosition = CameraStart;
@@ -83,6 +81,16 @@ FVector AAaronDefaultController::GetLevelPosition()
 	return Location;
 }
 
+void AAaronDefaultController::DisableMovement()
+{
+	MovementEnabled = false;
+}
+
+void AAaronDefaultController::EnableMovement()
+{
+	MovementEnabled = true;
+}
+
 void AAaronDefaultController::HandleMove(const FInputActionValue& InputActionValue)
 {
 	const FVector2D MovementVector = InputActionValue.Get<FVector2D>();
@@ -96,7 +104,7 @@ void AAaronDefaultController::HandleMove(const FInputActionValue& InputActionVal
 	FlashlightAngle = CalculateLookAngle(MousePosition);
 
 
-	if (PlayerCharacter)
+	if (PlayerCharacter && MovementEnabled)
 	{
 
 
@@ -172,15 +180,18 @@ void AAaronDefaultController::HandleInteract()
 		if (PlayerCharacter->InDialog()) {
 			PlayerCharacter->SetDialog(PlayerCharacter->getDialog()->NextDialog());
 		}
-		if (PlayerCharacter->IsHidden)
-		{
-			FVector PlayerPosition = PlayerCharacter->GetActorLocation();
-			if (PlayerPosition.X < 5)
-				PlayerPosition.X = 230;
-			else
-				PlayerPosition.X = 0;
-			PlayerCharacter->SetActorLocation(PlayerPosition);
-		}
+		//if (PlayerCharacter->NearHideaway()) {
+			PlayerCharacter->Hide();
+		//}
+		//if (PlayerCharacter->IsHidden)
+		//{
+		//	FVector PlayerPosition = PlayerCharacter->GetActorLocation();
+		//	if (PlayerPosition.X < 5)
+		//		PlayerPosition.X = 230;
+		//	else
+		//		PlayerPosition.X = 0;
+		//	PlayerCharacter->SetActorLocation(PlayerPosition);
+		//}
 	}
 }
 

@@ -2,6 +2,7 @@
 
 
 #include "Hideaway.h"
+#include "Aaron.h"
 
 // Sets default values
 AHideaway::AHideaway()
@@ -14,6 +15,13 @@ AHideaway::AHideaway()
 bool AHideaway::CheckIfHideaway()
 {
 	return true;
+}
+
+void AHideaway::PerformAction(AActor* Character)
+{
+	if (AAaron* Aaron = Cast<AAaron>(Character)) {
+		Aaron->SetHideaway(this);
+	}
 }
 
 

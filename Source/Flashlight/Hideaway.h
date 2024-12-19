@@ -16,6 +16,7 @@ public:
 	// Sets default values for this actor's properties
 	AHideaway();
 	virtual bool CheckIfHideaway() override;
+	void PerformAction(AActor* Character = nullptr) override;
 
 protected:
 	// Called when the game starts or when spawned

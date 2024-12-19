@@ -3,6 +3,7 @@
 
 #include "DefaultAnimInstance.h"
 #include "GameFramework/Character.h"
+#include "Aaron.h"
 
 UDefaultAnimInstance::UDefaultAnimInstance()
 {
@@ -11,7 +12,7 @@ UDefaultAnimInstance::UDefaultAnimInstance()
 void UDefaultAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
-	Character = Cast<ACharacter>(TryGetPawnOwner());
+	Character = Cast<AAaron>(TryGetPawnOwner());
 }
 
 void UDefaultAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -20,10 +21,15 @@ void UDefaultAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	if (Character)
 	{
 		UpdateAnimProperties();
+		
 	}
 }
 
 void UDefaultAnimInstance::UpdateAnimProperties()
 {
-	WalkSpeed = abs(Character->GetVelocity().Y);
+	WalkSpeed = abs(Character->GetVelocity().Size());
+	CrouchPosition = Character->GetCrouchPosition();
+	IsHidden = Character->IsHidden;
+	IsCrouched = Character->IsCrouched;
 }
+
